@@ -99,6 +99,10 @@
       cursor:pointer;
       margin-top: 10px;
     }
+    .row .btn{
+     margin-top: 0;
+    }
+
     .btn:active{ transform: translateY(1px); }
 
     .pills{
@@ -226,6 +230,11 @@
 
         <button class="btn" id="predictBtn">Predict</button>
 
+          <div class="row" style="margin-top:10px;">
+        <button class="btn" id="exampleBtn" type="button">Try example</button>
+        <button class="btn" id="resetBtn" type="button" style="background: rgba(255,255,255,.10); color: var(--text); border:1px solid var(--line);">Reset</button>
+        </div>
+
         <div class="pills">
           <span class="pill" id="tierPill">Tier: —</span>
           <span class="pill" id="stdPill">Standard: —</span>
@@ -286,6 +295,47 @@ function parseSwimTimeToSeconds(str) {
 
     return minutes * 60 + seconds;
   }
+
+function setDefaults(){
+  document.getElementById("age").value = "11";
+  document.getElementById("time").value = "30.31";
+  document.getElementById("event").value = "G_50FR_SCY";
+
+  document.getElementById("tierPill").textContent = "Tier: —";
+  document.getElementById("stdPill").textContent = "Standard: —";
+  document.getElementById("outputs").style.display = "none";
+  document.getElementById("pctUsed").textContent = "";
+  document.getElementById("coverageNote").textContent = "";
+
+  // redraw a neutral chart
+  drawChart(11, 30.31, "Intermediate", pctImproveGirls50FreeSCY, "Girls 50 Free (SCY)");
+}
+
+function setExample(){
+  const event = document.getElementById("event").value;
+
+  // Keep age default 11 for examples
+  document.getElementById("age").value = "11";
+
+  if (event === "G_50FR_SCY") {
+    document.getElementById("time").value = "30.31";
+  } else if (event === "G_100FR_SCY") {
+    document.getElementById("time").value = "1:10.00";
+  } else {
+    // coming soon events
+    document.getElementById("time").value = "—";
+    alert("That event is not wired yet. Choose 50 Free or 100 Free.");
+    return;
+  }
+}
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  setDefaults();
+});
+
+document.getElementById("exampleBtn").addEventListener("click", () => {
+  setExample();
+});
 
   const sec = Number(s);
   return Number.isFinite(sec) ? sec : NaN;
