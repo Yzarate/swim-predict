@@ -147,10 +147,17 @@
   background: rgba(255,255,255,.02);
   border:1px solid var(--line);
   border-radius: 16px;
-  height: 390px;              /* ✅ important: prevents “infinite” growth */
   overflow: hidden;  /* ✅ prevents canvas from overlapping text below */
 }
+  .chartArea{
+    height: 320px;
+}
 
+#chart{
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
     .chartTitle{
       display:flex;
       justify-content:space-between;
@@ -238,18 +245,24 @@
       </div>
 
       <div class="card">
-        <div class="chartWrap">
-          <div class="chartTitle">
-            <div class="left" id="chartTitle">CDC-like chart (ballpark)</div>
-            <div class="right">Typical range (25–75) + median</div>
-          </div>
+       <div class="chartWrap">
+         <div class="chartTitle">
+          <div class="left" id="chartTitle">CDC-like chart (ballpark)</div>
+          <div class="right">Typical range (25–75) + median</div>
+         </div>
+
+        <div class="chartArea">
           <canvas id="chart"></canvas>
-          <div class="small" id="coverageNote" style="margin-top:8px;"></div>
         </div>
-        <div class="small" style="margin-top:10px; white-space: normal;">
-        This is a “ballpark” projection using year-to-year improvement patterns from swimmers with annual best times at consecutive ages.
-        </div>
+
+        <div class="small" id="coverageNote" style="margin-top:8px;"></div>
       </div>
+
+      <div class="small" style="margin-top:10px; white-space: normal;">
+         This is a “ballpark” projection using year-to-year improvement patterns from swimmers with annual best times at consecutive ages.
+      </div>
+    </div>
+
     </div>
   </div>
 
