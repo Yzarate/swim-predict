@@ -58,6 +58,7 @@
       border-radius:16px;
       padding:16px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      
     }
     .card h2{
       font-size: 16px;
@@ -135,6 +136,11 @@
       margin-top: 6px;
       line-height: 1.6;
     }
+    #chart{
+     width: 100% !important;
+    height: 300px !important;  /* adjust if you want taller/shorter plot */
+     display: block;
+    }
 
     .chartWrap{
   padding: 12px 12px 6px;
@@ -142,6 +148,7 @@
   border:1px solid var(--line);
   border-radius: 16px;
   height: 360px;              /* ✅ important: prevents “infinite” growth */
+  overflow: hidden;  /* ✅ prevents canvas from overlapping text below */
 }
 
     .chartTitle{
