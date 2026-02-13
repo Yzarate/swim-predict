@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Swim Predict</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#070b14;
+      --card:#0b1222;
+      --card2:#0e1830;
+      --text:#eaf0ff;
+      --muted:#b8c3e6;
+      --line:rgba(255,255,255,.12);
+      --accent:#7aa2ff;
+      --good:#41d37e;
+      --warn:#ffd166;
+    }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, #10214a 0%, var(--bg) 55%);
+      color:var(--text);
+    }
+    .wrap{
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 0 16px 40px;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:16px;
+    }
+    h1{
+      font-size: 28px;
+      margin:0;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .card h2{
+      font-size: 16px;
+      margin:0 0 10px;
+      color:var(--text);
+    }
+    label{
+      display:block;
+      font-size: 13px;
+      color:var(--muted);
+      margin:10px 0 6px;
+    }
+    input, select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: #0a1224;
+      color: var(--text);
+      font-size: 15px;
+      box-sizing:border-box;
+      margin-bottom: 8px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .btn{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:0;
+      background: linear-gradient(90deg, #3f7cff, #7aa2ff);
+      color:#06102a;
+      font-weight:700;
+      font-size: 15px;
+      cursor:pointer;
+      margin-top: 10px;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 10px;
+    }
+    .pill{
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .pill.good{ color: var(--good); border-color: rgba(65,211,126,.35); }
+    .pill.warn{ color: var(--warn); border-color: rgba(255,209,102,.35); }
+
+    .outputs{
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      display:none;
+    }
+    .big{
+      font-size: 26px;
+      font-weight:800;
+      margin: 6px 0 0;
+      letter-spacing: .2px;
+    }
+    .small{
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+      line-height: 1.35;
+    }
+
+    .chartWrap{
+  padding: 12px 12px 6px;
+  background: rgba(255,255,255,.02);
+  border:1px solid var(--line);
+  border-radius: 16px;
+  height: 360px;              /* ✅ important: prevents “infinite” growth */
+}
+
+    .chartTitle{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:baseline;
+      margin: 2px 4px 6px;
+    }
+    .chartTitle .left{
+      font-weight:700;
+      font-size: 14px;
+    }
+    .chartTitle .right{
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Swim Predict</h1>
+        <div class="sub">
+          Enter an event, age, and time. You’ll get the current USA Swimming standard (age-group) and a ballpark prediction for next year with a typical range.
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Predict my child’s future time</h2>
+
+        <label for="event">Event</label>
+        <select id="event">
+          <option value="G_50FR_SCY" selected>Girls 50 Free (SCY)</option>
+          <option value="G_100FR_SCY">Girls 100 Free (SCY)</option>
+          <option value="G_50BK_SCY">Girls 50 Back (SCY) — coming soon</option>
+          <option value="G_100BK_SCY">Girls 100 Back (SCY) — coming soon</option>
+          <option value="G_50FL_SCY">Girls 50 Fly (SCY) — coming soon</option>
+          <option value="G_100FL_SCY">Girls 100 Fly (SCY) — coming soon</option>
+          <option value="G_200FR_SCY">Girls 200 Free (SCY) — coming soon</option>
+          <option value="G_200IM_SCY">Girls 200 IM (SCY) — coming soon</option>
+          <option value="G_500FR_SCY">Girls 500 Free (SCY) — coming soon</option>
+        </select>
+
+        <div class="row">
+          <div>
+            <label for="age">Age (years)</label>
+            <input id="age" type="number" step="0.1" value="11" />
+          </div>
+          <div>
+            <label for="sex">Sex</label>
+            <select id="sex" disabled>
+              <option selected>Female (for now)</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="time">Current time (mm:ss.xx or seconds)</label>
+        <input id="time" type="text" value="30.31" placeholder="e.g. 31.45 or 1:06.89" />
+
+        <button class="btn" id="predictBtn">Predict</button>
+
+        <div class="pills">
+          <span class="pill" id="tierPill">Tier: —</span>
+          <span class="pill" id="stdPill">Standard: —</span>
+        </div>
+
+        <div class="outputs" id="outputs">
+          <div class="small">Predicted next year (age <span id="ageNext">—</span>)</div>
+          <div class="big"><span id="predMedian">—</span></div>
+          <div class="small">Typical range (25th–75th): <span id="predRange">—</span></div>
+          <div class="small" id="pctUsed"></div>
+
+        </div>
+
+        <div class="small" style="margin-top:12px;">
+          Tier buckets: Beginner (Unlisted/B), Intermediate (BB/A), Advanced (AA+). Standards are USA Swimming age-group cutoffs.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chartWrap">
+          <div class="chartTitle">
+            <div class="left" id="chartTitle">CDC-like chart (ballpark)</div>
+            <div class="right">Typical range (25–75) + median</div>
+          </div>
+          <canvas id="chart"></canvas>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          This is a “ballpark” projection using year-to-year improvement patterns from swimmers with annual best times at consecutive ages.
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* -------------------------
+   Helpers: time parsing/formatting
+--------------------------*/
+function parseSwimTimeToSeconds(str) {
+  const s = String(str).trim();
+  if (!s) return NaN;
+
+  if (s.includes(":")) {
+    const parts = s.split(":");
+    if (parts.length !== 2) return NaN;
+
+    const minutes = Number(parts[0]);
+    const seconds = Number(parts[1]);
+
+    if (!Number.isFinite(minutes) || !Number.isFinite(seconds)) return NaN;
+    if (minutes < 0 || seconds < 0 || seconds >= 60) return NaN;
+
+    return minutes * 60 + seconds;
+  }
+
+  const sec = Number(s);
+  return Number.isFinite(sec) ? sec : NaN;
+}
+
+function fmtPct(x){
+  if (!Number.isFinite(x)) return "—";
+  const sign = x > 0 ? "+" : "";
+  return `${sign}${x.toFixed(2)}%`;
+}
+
+function formatSecondsToSwimTime(seconds) {
+  const sec = Number(seconds);
+  if (!Number.isFinite(sec)) return "—";
+  if (sec < 60) return sec.toFixed(2);
+  const minutes = Math.floor(sec / 60);
+  const rem = sec - minutes * 60;
+  const remStr = rem.toFixed(2).padStart(5, "0");
+  return `${minutes}:${remStr}`;
+}
+
+function clamp(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
+
+/* -------------------------
+   USA Swimming Motivational Standards — AGE GROUP (SCY)
+   Faster is better: must be <= cutoff to achieve letter.
+   Source: USA Swimming Motivational Standards (age-group PDF)
+--------------------------*/
+function getAgeGroupKey(ageInt){
+  if (ageInt <= 10) return "10U";
+  if (ageInt <= 12) return "11-12";
+  if (ageInt <= 14) return "13-14";
+  if (ageInt <= 16) return "15-16";
+  return "17-18";
+}
+
+// Girls 50 Free SCY (age group)
+const standardsGirls50FreeSCY = {
+  "10U":   { B:39.79, BB:35.99, A:32.09, AA:30.89, AAA:29.59, AAAA:28.29 },
+  "11-12": { B:33.99, BB:31.69, A:29.29, AA:28.09, AAA:26.99, AAAA:25.79 },
+  "13-14": { B:32.49, BB:30.19, A:27.89, AA:26.69, AAA:25.59, AAAA:24.39 },
+  "15-16": { B:31.79, BB:29.49, A:27.29, AA:26.09, AAA:24.99, AAAA:23.89 },
+  "17-18": { B:31.39, BB:29.09, A:26.89, AA:25.79, AAA:24.69, AAAA:23.49 }
+};
+
+// Girls 100 Free SCY (age group)
+const standardsGirls100FreeSCY = {
+  "10U":   { B:90.79, BB:81.09, A:71.49, AA:68.29, AAA:64.99, AAAA:61.79 },
+  "11-12": { B:74.69, BB:69.39, A:63.99, AA:61.39, AAA:58.69, AAAA:55.99 },
+  "13-14": { B:70.99, BB:65.89, A:60.89, AA:58.29, AAA:55.79, AAAA:53.29 },
+  "15-16": { B:68.79, BB:63.79, A:58.89, AA:56.49, AAA:53.99, AAAA:51.59 },
+  "17-18": { B:68.09, BB:63.19, A:58.39, AA:55.89, AAA:53.49, AAAA:51.09 }
+};
+
+function getStandardLetter(ageInt, timeSec, standardsByGroup){
+  const group = getAgeGroupKey(ageInt);
+  const s = standardsByGroup[group];
+  if(!s) return {letter:"N/A", tier:"Beginner", group};
+
+  let letter = "Unlisted";
+  if(timeSec <= s.AAAA) letter = "AAAA";
+  else if(timeSec <= s.AAA) letter = "AAA";
+  else if(timeSec <= s.AA) letter = "AA";
+  else if(timeSec <= s.A) letter = "A";
+  else if(timeSec <= s.BB) letter = "BB";
+  else if(timeSec <= s.B) letter = "B";
+
+  const tier =
+    (letter === "AAAA" || letter === "AAA" || letter === "AA") ? "Advanced" :
+    (letter === "A" || letter === "BB") ? "Intermediate" :
+    "Beginner";
+
+  return {letter, tier, group};
+}
+
+/* -------------------------
+   Improvement tables
+   % improvement for age_from -> age_from+1
+   (Use your existing 50 Free table here if you already had it.
+    I’m providing a reasonable placeholder structure PLUS the full 100 Free table you computed.)
+--------------------------*/
+
+// IMPORTANT:
+// If you already have a real 50 Free improvement object from your prior work,
+// replace the placeholder below with your real one.
+// The key name MUST be: pctImproveGirls50FreeSCY
+
+const pctImproveGirls50FreeSCY = {
+  Beginner: {
+    9: { p25: 7.43, p50: 13.12, p75: 16.39 },
+    10: { p25: 10.44, p50: 12.26, p75: 15.08 },
+    11: { p25: 8.15, p50: 10.40, p75: 11.70 },
+    12: { p25: 5.61, p50: 6.49, p75: 7.67 },
+    13: { p25: 5.29, p50: 10.27, p75: 11.56 },
+    14: { p25: 0.77, p50: 4.02, p75: 5.72 },
+    15: { p25: 1.40, p50: 2.01, p75: 2.63 },
+  },
+  Intermediate: {
+    9: { p25: 7.59, p50: 9.33, p75: 11.09 },
+    10: { p25: 6.09, p50: 9.31, p75: 11.44 },
+    11: { p25: 4.14, p50: 6.28, p75: 7.41 },
+    12: { p25: 2.65, p50: 4.06, p75: 5.60 },
+    13: { p25: 1.73, p50: 3.00, p75: 4.14 },
+    14: { p25: -3.17, p50: 0.27, p75: 3.39 },
+    15: { p25: -5.27, p50: 1.91, p75: 6.44 },
+  },
+  Advanced: {
+    10: { p25: 4.26, p50: 6.18, p75: 7.71 },
+    11: { p25: -0.08, p50: 2.19, p75: 5.36 },
+    12: { p25: 2.14, p50: 3.70, p75: 4.75 },
+    13: { p25: 0.24, p50: 1.48, p75: 3.46 },
+    14: { p25: 1.09, p50: 1.94, p75: 3.15 },
+    15: { p25: -1.88, p50: -1.14, p75: 0.07 },
+  },
+};
+  
+// Girls 100 Free SCY — from your processed dataset
+const pctImproveGirls100FreeSCY = {
+  Beginner: {
+    6:{p25:6.83,p50:8.69,p75:14.60},
+    7:{p25:8.14,p50:14.72,p75:18.26},
+    8:{p25:8.32,p50:12.49,p75:16.15},
+    9:{p25:7.75,p50:11.54,p75:14.64},
+    10:{p25:6.71,p50:9.55,p75:13.77},
+    11:{p25:4.58,p50:7.65,p75:10.07},
+    12:{p25:2.55,p50:4.19,p75:6.74},
+    13:{p25:0.56,p50:2.48,p75:4.68},
+    14:{p25:0.00,p50:1.09,p75:2.69},
+    15:{p25:-2.16,p50:-0.24,p75:0.57}
+  },
+  Intermediate: {
+    8:{p25:9.00,p50:11.78,p75:12.52},
+    9:{p25:7.56,p50:10.62,p75:13.11},
+    10:{p25:6.44,p50:8.97,p75:12.90},
+    11:{p25:4.29,p50:7.28,p75:9.64},
+    12:{p25:2.05,p50:3.42,p75:6.18},
+    13:{p25:0.06,p50:2.03,p75:4.11},
+    14:{p25:0.00,p50:0.92,p75:2.40}
+  },
+  Advanced: {
+    9:{p25:5.68,p50:6.39,p75:6.96},
+    10:{p25:4.42,p50:5.62,p75:6.55},
+    11:{p25:3.89,p50:5.31,p75:6.95},
+    12:{p25:1.31,p50:2.87,p75:4.82},
+    13:{p25:-0.41,p50:1.21,p75:2.93}
+  },
+  Overall: {
+    6:{p25:6.83,p50:8.69,p75:14.60},
+    7:{p25:8.14,p50:14.72,p75:18.26},
+    8:{p25:8.25,p50:12.48,p75:15.84},
+    9:{p25:7.61,p50:11.30,p75:14.48},
+    10:{p25:6.55,p50:9.44,p75:13.67},
+    11:{p25:4.41,p50:7.54,p75:9.98},
+    12:{p25:2.35,p50:3.95,p75:6.61},
+    13:{p25:0.37,p50:2.33,p75:4.49},
+    14:{p25:0.00,p50:1.07,p75:2.58},
+    15:{p25:-2.16,p50:-0.24,p75:0.57}
+  }
+};
+
+function getPctImprove(ageFrom, tier, improveTable){
+  const t = improveTable[tier] || improveTable["Overall"];
+  const row = t?.[ageFrom] || improveTable["Overall"]?.[ageFrom];
+  return row || null;
+}
+
+function applyPct(timeSec, pct){
+  // pct is % improvement; positive means faster -> lower time
+  return timeSec * (1 - (pct/100));
+}
+
+/* -------------------------
+   Chart
+--------------------------*/
+let chart = null;
+
+function getEventLabel(event){
+  if (event === "G_50FR_SCY") return "Girls 50 Free (SCY)";
+  if (event === "G_100FR_SCY") return "Girls 100 Free (SCY)";
+  return "Event";
+}
+
+function drawChart(ageNow, timeNow, tier, improveTable, eventLabel){
+  const startAge = clamp(Math.floor(ageNow), 6, 18);
+  const ages = [];
+  const med = [];
+  const low = [];
+  const high = [];
+
+  let tMed = timeNow;
+  let tLow = timeNow;
+  let tHigh = timeNow;
+
+for (let a = startAge; a <= 18; a++) {
+
+  // First point = current age/time
+  if (a === startAge) {
+    ages.push(a);
+    med.push(tMed);
+    low.push(tLow);
+    high.push(tHigh);
+    continue;
+  }
+
+  // Need the improvement for (a-1) -> a
+  const pctRow =
+    getPctImprove(a - 1, tier, improveTable) ||
+    getPctImprove(a - 1, "Overall", improveTable);
+
+  // If we don't have year-to-year data, STOP the chart here
+  if (!pctRow) break;
+
+  // Step forward one year
+  tMed = applyPct(tMed, pctRow.p50);
+  tLow = applyPct(tLow, pctRow.p75);
+  tHigh = applyPct(tHigh, pctRow.p25);
+
+  const bandMin = Math.min(tLow, tHigh);
+  const bandMax = Math.max(tLow, tHigh);
+
+  // Now add the age + values
+  ages.push(a);
+  med.push(tMed);
+  low.push(bandMin);
+  high.push(bandMax);
+}
+
+
+  // Chart title
+  document.getElementById("chartTitle").textContent = `${eventLabel} • ballpark trajectory`;
+
+  const ctx = document.getElementById("chart").getContext("2d");
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: ages.map(String),
+      datasets: [
+        // Invisible helper (low edge)
+        {
+          label: "low-edge-helper",
+          data: low,
+          borderWidth: 0,
+          pointRadius: 0,
+          fill: false
+        },
+        // Shaded band
+        {
+          label: "Typical range (25th–75th)",
+          data: high,
+          borderWidth: 0,
+          pointRadius: 0,
+          fill: { target: 0 }
+        },
+        // Median
+        {
+          label: "Median prediction",
+          data: med,
+          borderWidth: 3,
+          pointRadius: 2,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: "#eaf0ff",
+            filter: (item, data) => data.datasets[item.datasetIndex].label !== "low-edge-helper"
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const v = ctx.parsed.y;
+              if (v == null) return "";
+              return `${ctx.dataset.label}: ${formatSecondsToSwimTime(v)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: "#b8c3e6" },
+          grid: { color: "rgba(255,255,255,.06)" },
+          title: { display: true, text: "Age", color: "#b8c3e6" }
+        },
+        y: {
+          ticks: {
+            color: "#b8c3e6",
+            callback: (v) => formatSecondsToSwimTime(v)
+          },
+          grid: { color: "rgba(255,255,255,.06)" },
+          title: { display: true, text: "Time", color: "#b8c3e6" }
+        }
+      }
+    }
+  });
+}
+
+/* -------------------------
+   Predict Button
+--------------------------*/
+document.getElementById("predictBtn").addEventListener("click", () => {
+  const age = parseFloat(document.getElementById("age").value);
+  const time = parseSwimTimeToSeconds(document.getElementById("time").value);
+  const event = document.getElementById("event").value;
+
+  if (!Number.isFinite(age) || !Number.isFinite(time)) {
+    alert("Please enter a valid age and time (seconds or mm:ss.xx).");
+    return;
+  }
+
+  const ageInt = clamp(Math.floor(age), 6, 18);
+
+  const standards =
+    (event === "G_50FR_SCY") ? standardsGirls50FreeSCY :
+    (event === "G_100FR_SCY") ? standardsGirls100FreeSCY :
+    null;
+
+  const improveTable =
+    (event === "G_50FR_SCY") ? pctImproveGirls50FreeSCY :
+    (event === "G_100FR_SCY") ? pctImproveGirls100FreeSCY :
+    null;
+
+  const eventLabel = getEventLabel(event);
+
+  if (!standards || !improveTable) {
+    document.getElementById("outputs").style.display = "block";
+    document.getElementById("tierPill").textContent = "Tier: Coming soon";
+    document.getElementById("tierPill").className = "pill warn";
+    document.getElementById("stdPill").textContent = "This event is not wired yet";
+    document.getElementById("stdPill").className = "pill warn";
+    document.getElementById("ageNext").textContent = Math.floor(age) + 1;
+    document.getElementById("predMedian").textContent = "—";
+    document.getElementById("predRange").textContent = "—";
+    document.getElementById("pctUsed").textContent = "";
+    drawChart(age, time, "Beginner", pctImproveGirls100FreeSCY, eventLabel); // placeholder chart
+    return;
+  }
+
+  const std = getStandardLetter(ageInt, time, standards);
+
+  // Pill styling
+  document.getElementById("tierPill").textContent = `Tier: ${std.tier}`;
+  document.getElementById("tierPill").className = "pill " + (std.tier === "Advanced" ? "good" : (std.tier === "Intermediate" ? "warn" : ""));
+  document.getElementById("stdPill").textContent = `Standard: ${std.letter} (${std.group})`;
+  document.getElementById("stdPill").className = "pill";
+
+  const pct = getPctImprove(ageInt, std.tier, improveTable);
+  if (!pct) {
+    alert("Not enough data at this age to predict yet.");
+    return;
+  }
+
+  document.getElementById("pctUsed").textContent =
+  `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})`;
+
+  const nextAge = Math.floor(age) + 1;
+  const pred50 = applyPct(time, pct.p50);
+  const pred25 = applyPct(time, pct.p25);
+  const pred75 = applyPct(time, pct.p75);
+
+  document.getElementById("outputs").style.display = "block";
+  document.getElementById("ageNext").textContent = nextAge;
+  document.getElementById("predMedian").textContent = formatSecondsToSwimTime(pred50);
+  document.getElementById("predRange").textContent =
+    `${formatSecondsToSwimTime(Math.min(pred25, pred75))} – ${formatSecondsToSwimTime(Math.max(pred25, pred75))}`;
+
+  drawChart(age, time, std.tier, improveTable, eventLabel);
+});
+
+// Initial chart
+drawChart(11, 30.31, "Intermediate", pctImproveGirls50FreeSCY, "Girls 50 Free (SCY)");
+</script>
+
+</body>
+</html>
