@@ -767,6 +767,31 @@ function getModelForEvent(eventCode){
   const key = EVENT_TO_MODEL_KEY[eventCode];
   return all[key] || null;
 }
+function predictNextTimeFromModel(timeNow, model) {
+  // Model predicts DROP in seconds (positive = faster).
+  const dropBase = model.slope * timeNow + model.intercept;
+
+  const drop50 = dropBase + model.residP50;
+  const drop25 = dropBase + model.residP25;
+  const drop75 = dropBase + model.residP75;
+
+  // Convert "drop" into "next time"
+  const next50 = timeNow - drop50;
+  const next25 = timeNow - drop25;
+  const next75 = timeNow - drop75;
+
+  // Typical range should be ordered low..high in TIME (lower time = faster)
+  const lo = Math.min(next25, next75);
+  const hi = Math.max(next25, next75);
+
+  // Guardrail: never go below 0.00
+  return {
+    pred50: Math.max(0, next50),
+    lo: Math.max(0, lo),
+    hi: Math.max(0, hi),
+    drop50, drop25, drop75
+  };
+}
 
 /* -------------------------
    Predict Button
