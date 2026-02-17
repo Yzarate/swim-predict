@@ -827,6 +827,29 @@ document.getElementById("modelStatus").textContent =
   document.getElementById("stdPill").textContent = `Standard: ${std.letter} (${std.group})`;
   document.getElementById("stdPill").className = "pill";
 
+    // If a regression model exists, use it (preferred)
+  if (model) {
+    const next = predictNextFromModel(time, model);
+
+    document.getElementById("pctUsed").textContent =
+      `Model used (regression): y = ${model.slope.toFixed(4)}×x + ${model.intercept.toFixed(2)}; typical band uses residual P25/P50/P75`;
+
+    const nextAge = Math.floor(age) + 1;
+
+    document.getElementById("outputs").style.display = "block";
+    document.getElementById("ageNext").textContent = nextAge;
+    document.getElementById("predMedian").textContent = formatSecondsToSwimTime(next.pred50);
+    document.getElementById("predRange").textContent =
+      `${formatSecondsToSwimTime(next.lo)} – ${formatSecondsToSwimTime(next.hi)}`;
+
+    // Clear any old "sparse data" message; model-based chart handles its own stopping note
+    document.getElementById("coverageNote").textContent = "";
+
+    drawChartUsingModel(age, time, model, eventLabel);
+    return;
+  }
+
+  // Otherwise fall back to the old % improvement tables
   const pct = getPctImprove(ageInt, std.tier, improveTable);
   if (!pct) {
     alert("Not enough data at this age to predict yet.");
@@ -834,7 +857,7 @@ document.getElementById("modelStatus").textContent =
   }
 
   document.getElementById("pctUsed").textContent =
-  `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})`;
+    `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})`;
 
   const nextAge = Math.floor(age) + 1;
   const pred50 = applyPct(time, pct.p50);
@@ -848,10 +871,7 @@ document.getElementById("modelStatus").textContent =
     `${formatSecondsToSwimTime(Math.min(pred25, pred75))} – ${formatSecondsToSwimTime(Math.max(pred25, pred75))}`;
 
   drawChart(age, time, std.tier, improveTable, eventLabel);
-});
 
-// Initial chart
-drawChart(11, 30.31, "Intermediate", pctImproveGirls50FreeSCY, "Girls 50 Free (SCY)");
 </script>
 
 </body>
