@@ -886,10 +886,10 @@ function updateEventDropdownStatus(){
     const hasModel = !!getModelForEvent(code);
 
     const hasStandards =
-      (code === "G_50FR_SCY") || (code === "G_100FR_SCY");
+  (code === "G_50FR_SCY") || (code === "G_50BR_SCY") || (code === "G_100FR_SCY");
 
-    const hasImprove =
-      (code === "G_50FR_SCY") || (code === "G_100FR_SCY");
+const hasImprove =
+  (code === "G_50FR_SCY") || (code === "G_50BR_SCY") || (code === "G_100FR_SCY");
 
     if (hasStandards && hasImprove) {
       opt.textContent = label + " ✅ ready";
