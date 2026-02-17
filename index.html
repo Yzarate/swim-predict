@@ -671,9 +671,14 @@ document.getElementById("predictBtn").addEventListener("click", () => {
   const time = parseSwimTimeToSeconds(document.getElementById("time").value);
   const event = document.getElementById("event").value;
 
-  const model = getModelForEvent(event);
-  const mappedKey = (typeof EVENT_TO_MODEL_KEY !== "undefined") ? EVENT_TO_MODEL_KEY[event] : "(no mapping)";
-  const nKeys = window.SWIM_MODELS ? Object.keys(window.SWIM_MODELS).length : 0;
+ const model = getModelForEvent(event);
+const mappedKey = (typeof EVENT_TO_MODEL_KEY !== "undefined") ? EVENT_TO_MODEL_KEY[event] : "(no mapping)";
+const nKeys = window.SWIM_MODELS ? Object.keys(window.SWIM_MODELS).length : 0;
+
+document.getElementById("modelStatus").textContent =
+  model
+    ? `✅ Model loaded for ${event} (key: ${mappedKey}). Total models: ${nKeys}`
+    : `⚠️ No model found for ${event} (key: ${mappedKey}). Total models: ${nKeys}`;
 
     if (!Number.isFinite(age) || !Number.isFinite(time)) {
     alert("Please enter a valid age and time (seconds or mm:ss.xx).");
