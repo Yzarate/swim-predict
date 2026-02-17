@@ -513,54 +513,6 @@ function applyPct(timeSec, pct){
   return timeSec * (1 - (pct/100));
 }
     
-  
-  // Chart title
-  document.getElementById("chartTitle").textContent = `${eventLabel} • ballpark trajectory`;
-
-  const ctx = document.getElementById("chart").getContext("2d");
-  if (chart) chart.destroy();
-
-  chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: ages.map(String),
-      datasets: [
-        { label: "low-edge-helper", data: low, borderWidth: 0, pointRadius: 0, fill: false },
-        { label: "Typical range (25th–75th)", data: high, borderWidth: 0, pointRadius: 0, fill: { target: 0 } },
-        { label: "Median prediction", data: med, borderWidth: 3, pointRadius: 2, fill: false }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: {
-            color: "#eaf0ff",
-            filter: (item, data) => data.datasets[item.datasetIndex].label !== "low-edge-helper"
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${formatSecondsToSwimTime(ctx.parsed.y)}`
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: "#b8c3e6" },
-          grid: { color: "rgba(255,255,255,.06)" },
-          title: { display: true, text: "Age", color: "#b8c3e6" }
-        },
-        y: {
-          ticks: { color: "#b8c3e6", callback: (v) => formatSecondsToSwimTime(v) },
-          grid: { color: "rgba(255,255,255,.06)" },
-          title: { display: true, text: "Time", color: "#b8c3e6" }
-        }
-      }
-    }
-  });
-
 /* -------------------------
    Chart
 --------------------------*/
