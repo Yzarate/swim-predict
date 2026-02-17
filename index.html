@@ -248,6 +248,7 @@
           <div class="big"><span id="predMedian">—</span></div>
           <div class="small">Typical range (25th–75th): <span id="predRange">—</span></div>
           <div class="small" id="pctUsed"></div>
+          <div class="small" id="nPairsNote"></div>
 
         </div>
 
@@ -706,7 +707,15 @@ document.getElementById("predictBtn").addEventListener("click", () => {
       ? `✅ Model loaded for ${event} (key: ${mappedKey}). Total models: ${nKeys}`
       : `⚠️ No model found for ${event} (key: ${mappedKey}). Total models: ${nKeys}`;
   }
-
+// Overall data coverage note (from models.js if available)
+const np = document.getElementById("nPairsNote");
+if (np) {
+  if (model && Number.isFinite(model.nPairs)) {
+    np.textContent = `Data coverage (overall): n=${model.nPairs} consecutive-age pairs`;
+  } else {
+    np.textContent = "";
+  }
+}
   if (!Number.isFinite(age) || !Number.isFinite(time)) {
     alert("Please enter a valid age and time (seconds or mm:ss.xx).");
     return;
