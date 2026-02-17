@@ -405,6 +405,15 @@ const standardsGirls100FreeSCY = {
   "17-18": { B:68.09, BB:63.19, A:58.39, AA:55.89, AAA:53.49, AAAA:51.09 }
 };
 
+// Girls 50 Breast SCY (age group)
+const standardsGirls50BreastSCY = {
+  "10U":   { B:54.59, BB:48.69, A:42.79, AA:40.89, AAA:38.89, AAAA:36.89 },
+  "11-12": { B:43.99, BB:40.89, A:37.69, AA:36.19, AAA:34.59, AAAA:32.99 },
+  "13-14": { B:42.09, BB:39.09, A:36.09, AA:34.59, AAA:33.09, AAAA:31.59 },
+  "15-16": { B:41.09, BB:38.19, A:35.19, AA:33.79, AAA:32.29, AAAA:30.79 },
+  "17-18": { B:40.39, BB:37.49, A:34.59, AA:33.19, AAA:31.69, AAAA:30.29 }
+};
+
 function getStandardLetter(ageInt, timeSec, standardsByGroup){
   const group = getAgeGroupKey(ageInt);
   const s = standardsByGroup[group];
@@ -511,6 +520,49 @@ const pctImproveGirls100FreeSCY = {
   }
 };
 
+// Girls 50 Breast SCY — from your processed dataset (Strict365)
+const pctImproveGirls50BreastSCY = {
+  "Advanced": {
+    10: { p25: 3.1973842283, p50: 7.4956991890, p75: 9.4406763242, n: 7 },
+    11: { p25: 4.1298377778, p50: 6.9083242043, p75: 9.6868106307, n: 2 },
+    12: { p25: 5.9068219634, p50: 5.9068219634, p75: 5.9068219634, n: 1 },
+    13: { p25: 1.7683473818, p50: 1.7683473818, p75: 1.7683473818, n: 1 },
+    14: { p25: 4.9835868619, p50: 4.9835868619, p75: 4.9835868619, n: 1 }
+  },
+  "Beginner": {
+    6: { p25: 10.8722076736, p50: 11.9423243430, p75: 13.7640653358, n: 7 },
+    7: { p25: 12.3518786687, p50: 16.0687820397, p75: 20.9627393873, n: 26 },
+    8: { p25: 8.8709682286, p50: 11.9870041494, p75: 15.5070394378, n: 44 },
+    9: { p25: 7.8434670066, p50: 11.6639332943, p75: 16.4094839010, n: 70 },
+    10:{ p25: 11.1362346320, p50: 14.7564469914, p75: 16.5934873948, n: 37 },
+    11:{ p25: 7.2838996336, p50: 10.4260009354, p75: 13.2541378182, n: 9 },
+    12:{ p25: 3.9392063854, p50: 7.0071005756, p75: 9.3005958674, n: 3 },
+    13:{ p25: 2.5436744238, p50: 2.5436744238, p75: 2.5436744238, n: 1 }
+  },
+  "Intermediate": {
+    8: { p25: 8.5179137005, p50: 11.3509253749, p75: 15.2431866236, n: 5 },
+    9: { p25: 6.6283342518, p50: 9.9934129041, p75: 15.4635415641, n: 14 },
+    10:{ p25: 7.8858348285, p50: 11.4000000000, p75: 15.5466717884, n: 42 },
+    11:{ p25: 5.1657894737, p50: 8.4313725490, p75: 10.5970149254, n: 28 },
+    12:{ p25: 3.9111111111, p50: 5.9777777778, p75: 8.0444444444, n: 9 },
+    13:{ p25: 1.2600000000, p50: 3.1153846154, p75: 4.9700000000, n: 9 },
+    14:{ p25: 0.0000000000, p50: 1.2500000000, p75: 3.8100000000, n: 4 },
+    15:{ p25: 0.0000000000, p50: 0.0000000000, p75: 0.0000000000, n: 1 }
+  },
+  "Overall": {
+    6: { p25: 10.8722076736, p50: 11.9423243430, p75: 13.7640653358, n: 7 },
+    7: { p25: 12.3518786687, p50: 16.0687820397, p75: 20.9627393873, n: 26 },
+    8: { p25: 8.5179137005, p50: 11.3509253749, p75: 15.2431866236, n: 49 },
+    9: { p25: 6.6283342518, p50: 9.9934129041, p75: 15.4635415641, n: 84 },
+    10:{ p25: 7.8858348285, p50: 11.4000000000, p75: 15.5466717884, n: 86 },
+    11:{ p25: 5.1657894737, p50: 8.4313725490, p75: 10.5970149254, n: 39 },
+    12:{ p25: 3.9111111111, p50: 5.9777777778, p75: 8.0444444444, n: 13 },
+    13:{ p25: 1.2600000000, p50: 3.1153846154, p75: 4.9700000000, n: 11 },
+    14:{ p25: 0.0000000000, p50: 1.2500000000, p75: 3.8100000000, n: 5 },
+    15:{ p25: 0.0000000000, p50: 0.0000000000, p75: 0.0000000000, n: 1 }
+  }
+};
+
 function getPctImprove(ageFrom, tier, improveTable){
   const t = improveTable[tier] || improveTable["Overall"];
   const row = t?.[ageFrom] || improveTable["Overall"]?.[ageFrom];
@@ -529,6 +581,7 @@ let chart = null;
 
 function getEventLabel(event){
   if (event === "G_50FR_SCY") return "Girls 50 Free (SCY)";
+  if (event === "G_50BR_SCY") return "Girls 50 Breast (SCY)";
   if (event === "G_100FR_SCY") return "Girls 100 Free (SCY)";
   return "Event";
 }
@@ -741,14 +794,16 @@ if (np) {
   const ageInt = clamp(Math.floor(age), 6, 18);
 
   const standards =
-    (event === "G_50FR_SCY") ? standardsGirls50FreeSCY :
-    (event === "G_100FR_SCY") ? standardsGirls100FreeSCY :
-    null;
+  (event === "G_50FR_SCY") ? standardsGirls50FreeSCY :
+  (event === "G_50BR_SCY") ? standardsGirls50BreastSCY :
+  (event === "G_100FR_SCY") ? standardsGirls100FreeSCY :
+  null;
 
-  const improveTable =
-    (event === "G_50FR_SCY") ? pctImproveGirls50FreeSCY :
-    (event === "G_100FR_SCY") ? pctImproveGirls100FreeSCY :
-    null;
+const improveTable =
+  (event === "G_50FR_SCY") ? pctImproveGirls50FreeSCY :
+  (event === "G_50BR_SCY") ? pctImproveGirls50BreastSCY :
+  (event === "G_100FR_SCY") ? pctImproveGirls100FreeSCY :
+  null;
 
   const eventLabel = getEventLabel(event);
 
@@ -785,7 +840,7 @@ if (np) {
   }
 
   document.getElementById("pctUsed").textContent =
-    `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})`;
+  `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)}) • nPairs=${pct.n ?? "?"}`;
 
   const nextAge = Math.floor(age) + 1;
   const pred50 = applyPct(time, pct.p50);
