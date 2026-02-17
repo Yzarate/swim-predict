@@ -752,16 +752,18 @@ document.getElementById("predictBtn").addEventListener("click", () => {
   const time = parseSwimTimeToSeconds(document.getElementById("time").value);
   const event = document.getElementById("event").value;
 
- const model = getModelForEvent(event);
-const mappedKey = (typeof EVENT_TO_MODEL_KEY !== "undefined") ? EVENT_TO_MODEL_KEY[event] : "(no mapping)";
-const nKeys = window.SWIM_MODELS ? Object.keys(window.SWIM_MODELS).length : 0;
+  // Optional: show that models.js is loaded (does NOT affect calculations)
+  const model = getModelForEvent(event);
+  const mappedKey = (typeof EVENT_TO_MODEL_KEY !== "undefined") ? EVENT_TO_MODEL_KEY[event] : "(no mapping)";
+  const nKeys = window.SWIM_MODELS ? Object.keys(window.SWIM_MODELS).length : 0;
+  const ms = document.getElementById("modelStatus");
+  if (ms) {
+    ms.textContent = model
+      ? `✅ Model loaded for ${event} (key: ${mappedKey}). Total models: ${nKeys}`
+      : `⚠️ No model found for ${event} (key: ${mappedKey}). Total models: ${nKeys}`;
+  }
 
-document.getElementById("modelStatus").textContent =
-  model
-    ? `✅ Model loaded for ${event} (key: ${mappedKey}). Total models: ${nKeys}`
-    : `⚠️ No model found for ${event} (key: ${mappedKey}). Total models: ${nKeys}`;
-
-    if (!Number.isFinite(age) || !Number.isFinite(time)) {
+  if (!Number.isFinite(age) || !Number.isFinite(time)) {
     alert("Please enter a valid age and time (seconds or mm:ss.xx).");
     return;
   }
@@ -780,6 +782,7 @@ document.getElementById("modelStatus").textContent =
 
   const eventLabel = getEventLabel(event);
 
+  // If not wired yet
   if (!standards || !improveTable) {
     document.getElementById("outputs").style.display = "block";
     document.getElementById("tierPill").textContent = "Tier: Coming soon";
@@ -799,13 +802,12 @@ document.getElementById("modelStatus").textContent =
 
   // Pill styling
   document.getElementById("tierPill").textContent = `Tier: ${std.tier}`;
-  document.getElementById("tierPill").className = "pill " + (std.tier === "Advanced" ? "good" : (std.tier === "Intermediate" ? "warn" : ""));
+  document.getElementById("tierPill").className =
+    "pill " + (std.tier === "Advanced" ? "good" : (std.tier === "Intermediate" ? "warn" : ""));
   document.getElementById("stdPill").textContent = `Standard: ${std.letter} (${std.group})`;
   document.getElementById("stdPill").className = "pill";
 
-    // If a regression model exists, use it (preferred)
-  
-  // Otherwise fall back to the old % improvement tables
+  // Use % improvement tables (original working approach)
   const pct = getPctImprove(ageInt, std.tier, improveTable);
   if (!pct) {
     alert("Not enough data at this age to predict yet.");
@@ -816,10 +818,9 @@ document.getElementById("modelStatus").textContent =
     `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})`;
 
   const nextAge = Math.floor(age) + 1;
-
-const pred50 = applyPct(time, pct.p50);
-const pred25 = applyPct(time, pct.p25);
-const pred75 = applyPct(time, pct.p75);
+  const pred50 = applyPct(time, pct.p50);
+  const pred25 = applyPct(time, pct.p25);
+  const pred75 = applyPct(time, pct.p75);
 
   document.getElementById("outputs").style.display = "block";
   document.getElementById("ageNext").textContent = nextAge;
