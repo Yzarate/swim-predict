@@ -513,53 +513,6 @@ function applyPct(timeSec, pct){
   return timeSec * (1 - (pct/100));
 }
 
-function predictNextFromModel(timeNow, model) {
-  // timeNow is seconds; model has slope/intercept/residP25/P50/P75
-  const base = model.slope * timeNow + model.intercept;
-
-  const pred50 = base + model.residP50;
-  const pred25 = base + model.residP25;
-  const pred75 = base + model.residP75;
-
-  const lo = Math.min(pred25, pred75);
-  const hi = Math.max(pred25, pred75);
-
-  return { pred50, lo, hi, pred25, pred75 };
-}
-
-function drawChartUsingModel(ageNow, timeNow, model, eventLabel){
-  const startAge = clamp(Math.floor(ageNow), 6, 18);
-
-  const ages = [];
-  const med = [];
-  const low = [];
-  const high = [];
-
-  let tMed = timeNow;
-  let tLow = timeNow;
-  let tHigh = timeNow;
-
-  // We’ll stop if values go out of the model’s trained range.
-  const minT = Number.isFinite(model.minStartTime) ? model.minStartTime : -Infinity;
-  const maxT = Number.isFinite(model.maxStartTime) ? model.maxStartTime : Infinity;
-
-  for (let a = startAge; a <= 18; a++) {
-    // add current point
-    ages.push(a);
-    med.push(tMed);
-    low.push(Math.min(tLow, tHigh));
-    high.push(Math.max(tLow, tHigh));
-
-    // if this is the last age, stop
-    if (a === 18) break;
-
-    // stop if out of trained range (prevents nonsense projections)
-    if (tMed < minT || tMed > maxT) {
-      document.getElementById("coverageNote").textContent =
-        `Projection stops at age ${a} because the current time falls outside the model’s trained range (${formatSecondsToSwimTime(minT)}–${formatSecondsToSwimTime(maxT)}).`;
-      break;
-    }
-
     // step forward one year using the regression model
     const nextMed = predictNextFromModel(tMed, model);
     const nextLow = predictNextFromModel(tLow, model);
@@ -853,27 +806,7 @@ document.getElementById("modelStatus").textContent =
   document.getElementById("stdPill").className = "pill";
 
     // If a regression model exists, use it (preferred)
-  if (model) {
-    const next = predictNextFromModel(time, model);
-
-    document.getElementById("pctUsed").textContent =
-      `Model used (regression): y = ${model.slope.toFixed(4)}×x + ${model.intercept.toFixed(2)}; typical band uses residual P25/P50/P75`;
-
-    const nextAge = Math.floor(age) + 1;
-
-    document.getElementById("outputs").style.display = "block";
-    document.getElementById("ageNext").textContent = nextAge;
-    document.getElementById("predMedian").textContent = formatSecondsToSwimTime(next.pred50);
-    document.getElementById("predRange").textContent =
-      `${formatSecondsToSwimTime(next.lo)} – ${formatSecondsToSwimTime(next.hi)}`;
-
-    // Clear any old "sparse data" message; model-based chart handles its own stopping note
-    document.getElementById("coverageNote").textContent = "";
-
-    drawChartUsingModel(age, time, model, eventLabel);
-    return;
-  }
-
+  
   // Otherwise fall back to the old % improvement tables
   const pct = getPctImprove(ageInt, std.tier, improveTable);
   if (!pct) {
@@ -885,21 +818,10 @@ document.getElementById("modelStatus").textContent =
     `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})`;
 
   const nextAge = Math.floor(age) + 1;
-let pred50, pred25, pred75;
 
-if (model) {
-  const next = predictNextTimeFromModel(time, model);
-  pred50 = next.pred50;
-  pred25 = next.lo;
-  pred75 = next.hi;
-
-  document.getElementById("pctUsed").textContent =
-    `Model used (regression drop): drop = ${model.slope.toFixed(4)}×time + ${model.intercept.toFixed(2)} sec; band uses residual P25/P50/P75`;
-} else {
-  pred50 = applyPct(time, pct.p50);
-  pred25 = applyPct(time, pct.p25);
-  pred75 = applyPct(time, pct.p75);
-}
+const pred50 = applyPct(time, pct.p50);
+const pred25 = applyPct(time, pct.p25);
+const pred75 = applyPct(time, pct.p75);
 
   document.getElementById("outputs").style.display = "block";
   document.getElementById("ageNext").textContent = nextAge;
