@@ -814,7 +814,39 @@ function updateEventDropdownLabels(){
     }
   }
 }
-updateEventDropdownLabels();
+
+function updateEventDropdownStatus(){
+  const sel = document.getElementById("event");
+  if (!sel) return;
+
+  for (const opt of sel.options) {
+    const code = opt.value;
+
+    // Remove any previous tag
+    let label = opt.textContent
+      .replace(" ✅ ready", "")
+      .replace(" ⚠ coverage only", "")
+      .replace(" — coming soon", "");
+
+    const hasModel = !!getModelForEvent(code);
+
+    const hasStandards =
+      (code === "G_50FR_SCY") || (code === "G_100FR_SCY");
+
+    const hasImprove =
+      (code === "G_50FR_SCY") || (code === "G_100FR_SCY");
+
+    if (hasStandards && hasImprove) {
+      opt.textContent = label + " ✅ ready";
+    } else if (hasModel) {
+      opt.textContent = label + " ⚠ coverage only";
+    } else {
+      opt.textContent = label + " — coming soon";
+    }
+  }
+}
+
+updateEventDropdownStatus();
 
 // Initial chart
 drawChart(11, 30.31, "Intermediate", pctImproveGirls50FreeSCY, "Girls 50 Free (SCY)");
