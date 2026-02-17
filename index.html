@@ -665,6 +665,9 @@ document.getElementById("predictBtn").addEventListener("click", () => {
   const age = parseFloat(document.getElementById("age").value);
   const time = parseSwimTimeToSeconds(document.getElementById("time").value);
   const event = document.getElementById("event").value;
+    const model = getModelForEvent(event);
+  document.getElementById("coverageNote").textContent = model ? "✅ models.js found a model for this event" : "⚠️ models.js did NOT find a model for this event";
+
 
   if (!Number.isFinite(age) || !Number.isFinite(time)) {
     alert("Please enter a valid age and time (seconds or mm:ss.xx).");
