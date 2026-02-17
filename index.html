@@ -885,17 +885,16 @@ document.getElementById("modelStatus").textContent =
     `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})`;
 
   const nextAge = Math.floor(age) + 1;
- let pred50, pred25, pred75;
+let pred50, pred25, pred75;
 
 if (model) {
-  const base = model.slope * time + model.intercept;
-  pred50 = base + model.residP50;
-  pred25 = base + model.residP25;
-  pred75 = base + model.residP75;
+  const next = predictNextTimeFromModel(time, model);
+  pred50 = next.pred50;
+  pred25 = next.lo;
+  pred75 = next.hi;
 
   document.getElementById("pctUsed").textContent =
-    `Model used (regression): y = ${model.slope.toFixed(4)}×x + ${model.intercept.toFixed(2)}; residual band P25/P50/P75`;
-
+    `Model used (regression drop): drop = ${model.slope.toFixed(4)}×time + ${model.intercept.toFixed(2)} sec; band uses residual P25/P50/P75`;
 } else {
   pred50 = applyPct(time, pct.p50);
   pred25 = applyPct(time, pct.p25);
