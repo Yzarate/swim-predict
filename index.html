@@ -512,12 +512,7 @@ function applyPct(timeSec, pct){
   // pct is % improvement; positive means faster -> lower time
   return timeSec * (1 - (pct/100));
 }
-
-    // step forward one year using the regression model
-    const nextMed = predictNextFromModel(tMed, model);
-    const nextLow = predictNextFromModel(tLow, model);
-    const nextHigh = predictNextFromModel(tHigh, model);
-
+    
     tMed = nextMed.pred50;
     tLow = nextLow.lo;
     tHigh = nextHigh.hi;
