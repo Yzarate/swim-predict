@@ -513,6 +513,111 @@ function applyPct(timeSec, pct){
   return timeSec * (1 - (pct/100));
 }
 
+function predictNextFromModel(timeNow, model) {
+  // timeNow is seconds; model has slope/intercept/residP25/P50/P75
+  const base = model.slope * timeNow + model.intercept;
+
+  const pred50 = base + model.residP50;
+  const pred25 = base + model.residP25;
+  const pred75 = base + model.residP75;
+
+  const lo = Math.min(pred25, pred75);
+  const hi = Math.max(pred25, pred75);
+
+  return { pred50, lo, hi, pred25, pred75 };
+}
+
+function drawChartUsingModel(ageNow, timeNow, model, eventLabel){
+  const startAge = clamp(Math.floor(ageNow), 6, 18);
+
+  const ages = [];
+  const med = [];
+  const low = [];
+  const high = [];
+
+  let tMed = timeNow;
+  let tLow = timeNow;
+  let tHigh = timeNow;
+
+  // We’ll stop if values go out of the model’s trained range.
+  const minT = Number.isFinite(model.minStartTime) ? model.minStartTime : -Infinity;
+  const maxT = Number.isFinite(model.maxStartTime) ? model.maxStartTime : Infinity;
+
+  for (let a = startAge; a <= 18; a++) {
+    // add current point
+    ages.push(a);
+    med.push(tMed);
+    low.push(Math.min(tLow, tHigh));
+    high.push(Math.max(tLow, tHigh));
+
+    // if this is the last age, stop
+    if (a === 18) break;
+
+    // stop if out of trained range (prevents nonsense projections)
+    if (tMed < minT || tMed > maxT) {
+      document.getElementById("coverageNote").textContent =
+        `Projection stops at age ${a} because the current time falls outside the model’s trained range (${formatSecondsToSwimTime(minT)}–${formatSecondsToSwimTime(maxT)}).`;
+      break;
+    }
+
+    // step forward one year using the regression model
+    const nextMed = predictNextFromModel(tMed, model);
+    const nextLow = predictNextFromModel(tLow, model);
+    const nextHigh = predictNextFromModel(tHigh, model);
+
+    tMed = nextMed.pred50;
+    tLow = nextLow.lo;
+    tHigh = nextHigh.hi;
+  }
+
+  // Chart title
+  document.getElementById("chartTitle").textContent = `${eventLabel} • ballpark trajectory`;
+
+  const ctx = document.getElementById("chart").getContext("2d");
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: ages.map(String),
+      datasets: [
+        { label: "low-edge-helper", data: low, borderWidth: 0, pointRadius: 0, fill: false },
+        { label: "Typical range (25th–75th)", data: high, borderWidth: 0, pointRadius: 0, fill: { target: 0 } },
+        { label: "Median prediction", data: med, borderWidth: 3, pointRadius: 2, fill: false }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: "#eaf0ff",
+            filter: (item, data) => data.datasets[item.datasetIndex].label !== "low-edge-helper"
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${formatSecondsToSwimTime(ctx.parsed.y)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: "#b8c3e6" },
+          grid: { color: "rgba(255,255,255,.06)" },
+          title: { display: true, text: "Age", color: "#b8c3e6" }
+        },
+        y: {
+          ticks: { color: "#b8c3e6", callback: (v) => formatSecondsToSwimTime(v) },
+          grid: { color: "rgba(255,255,255,.06)" },
+          title: { display: true, text: "Time", color: "#b8c3e6" }
+        }
+      }
+    }
+  });
+}
+
 /* -------------------------
    Chart
 --------------------------*/
