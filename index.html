@@ -871,7 +871,10 @@ document.getElementById("modelStatus").textContent =
     `${formatSecondsToSwimTime(Math.min(pred25, pred75))} – ${formatSecondsToSwimTime(Math.max(pred25, pred75))}`;
 
   drawChart(age, time, std.tier, improveTable, eventLabel);
+});
 
+// Initial chart
+drawChart(11, 30.31, "Intermediate", pctImproveGirls50FreeSCY, "Girls 50 Free (SCY)");
 </script>
 
 </body>
