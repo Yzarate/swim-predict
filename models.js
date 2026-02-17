@@ -1,4 +1,4 @@
-export const MODELS = {
+window.SWIM_MODELS = {
   "G_SCY_50FR": {
     "displayName": "Girls SCY 50 FR",
     "slope": 0.5363862198245534,
