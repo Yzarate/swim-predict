@@ -655,13 +655,27 @@ const EVENT_TO_MODEL_KEY = {
   "G_100FR_SCY": "G_SCY_100FR"
 };
 
+// Converts dropdown codes like "G_50BK_SCY" -> models.js key "G_SCY_50BK"
+function defaultModelKeyForEvent(eventCode){
+  const m = /^G_(\d+)([A-Z]{2})_SCY$/.exec(eventCode);
+  if (!m) return null;
+  const dist = m[1];     // e.g., "50"
+  const stroke = m[2];   // e.g., "BK", "FR", "BR", "FL", "IM"
+  return `G_SCY_${dist}${stroke}`;
+}
+
 function getModelForEvent(eventCode){
   const all = window.SWIM_MODELS;
   if (!all) return null;
 
-  const key = EVENT_TO_MODEL_KEY[eventCode];
+  const key =
+    EVENT_TO_MODEL_KEY[eventCode] ||
+    defaultModelKeyForEvent(eventCode) ||
+    eventCode;
+
   return all[key] || null;
 }
+
 function predictNextTimeFromModel(timeNow, model) {
   // Model predicts DROP in seconds (positive = faster).
   const dropBase = model.slope * timeNow + model.intercept;
