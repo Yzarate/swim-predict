@@ -649,13 +649,17 @@ document.getElementById("coverageNote").textContent =
   });
 }
 
-function getModelForEvent(eventCode){
-  // Preferred: use models.js if it exposes SWIM_MODELS keyed by your event codes
-  const m = window.SWIM_MODELS?.[eventCode];
-  if (m) return m;
+const EVENT_TO_MODEL_KEY = {
+  "G_50FR_SCY": "G_SCY_50FR",
+  "G_100FR_SCY": "G_SCY_100FR"
+};
 
-  // No model found → return null and we’ll fall back
-  return null;
+function getModelForEvent(eventCode){
+  const all = window.SWIM_MODELS;
+  if (!all) return null;
+
+  const key = EVENT_TO_MODEL_KEY[eventCode];
+  return all[key] || null;
 }
 
 /* -------------------------
@@ -665,9 +669,7 @@ document.getElementById("predictBtn").addEventListener("click", () => {
   const age = parseFloat(document.getElementById("age").value);
   const time = parseSwimTimeToSeconds(document.getElementById("time").value);
   const event = document.getElementById("event").value;
-      const model = getModelForEvent(event);
-  alert(model ? "✅ models.js found a model for: " + event : "⚠️ models.js did NOT find a model for: " + event);
-
+      
   if (!Number.isFinite(age) || !Number.isFinite(time)) {
     alert("Please enter a valid age and time (seconds or mm:ss.xx).");
     return;
