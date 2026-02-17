@@ -241,8 +241,7 @@
           <span class="pill" id="tierPill">Tier: —</span>
           <span class="pill" id="stdPill">Standard: —</span>
         </div>
-        <div class="small" id="modelStatus" style="margin-top:8px;"></div>
-
+        
         <div class="outputs" id="outputs">
           <div class="small">Predicted next year (age <span id="ageNext">—</span>)</div>
           <div class="big"><span id="predMedian">—</span></div>
@@ -701,12 +700,7 @@ document.getElementById("predictBtn").addEventListener("click", () => {
   const model = getModelForEvent(event);
   const mappedKey = (typeof EVENT_TO_MODEL_KEY !== "undefined") ? EVENT_TO_MODEL_KEY[event] : "(no mapping)";
   const nKeys = window.SWIM_MODELS ? Object.keys(window.SWIM_MODELS).length : 0;
-  const ms = document.getElementById("modelStatus");
-  if (ms) {
-    ms.textContent = model
-      ? `✅ Model loaded for ${event} (key: ${mappedKey}). Total models: ${nKeys}`
-      : `⚠️ No model found for ${event} (key: ${mappedKey}). Total models: ${nKeys}`;
-  }
+  
 // Overall data coverage note (from models.js if available)
 const np = document.getElementById("nPairsNote");
 if (np) {
@@ -783,6 +777,21 @@ if (np) {
 
   drawChart(age, time, std.tier, improveTable, eventLabel);
 });
+function updateEventDropdownLabels(){
+  const sel = document.getElementById("event");
+  if (!sel) return;
+
+  for (const opt of sel.options) {
+    const eventCode = opt.value;
+    const m = getModelForEvent(eventCode);
+
+    // If there is a model for this event, remove "— coming soon"
+    if (m) {
+      opt.textContent = opt.textContent.replace(" — coming soon", "");
+    }
+  }
+}
+updateEventDropdownLabels();
 
 // Initial chart
 drawChart(11, 30.31, "Intermediate", pctImproveGirls50FreeSCY, "Girls 50 Free (SCY)");
