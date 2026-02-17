@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Swim Predict</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="models.js"></script>
+
   <style>
     :root{
       --bg:#070b14;
@@ -283,6 +285,7 @@ function parseSwimTimeToSeconds(str) {
   const s = String(str).trim();
   if (!s) return NaN;
 
+  // mm:ss.xx
   if (s.includes(":")) {
     const parts = s.split(":");
     if (parts.length !== 2) return NaN;
@@ -295,6 +298,11 @@ function parseSwimTimeToSeconds(str) {
 
     return minutes * 60 + seconds;
   }
+
+  // plain seconds
+  const sec = Number(s);
+  return Number.isFinite(sec) ? sec : NaN;
+}
 
 function setDefaults(){
   document.getElementById("age").value = "11";
@@ -337,10 +345,6 @@ document.getElementById("exampleBtn").addEventListener("click", () => {
   setExample();
   document.getElementById("predictBtn").click();
 });
-
-  const sec = Number(s);
-  return Number.isFinite(sec) ? sec : NaN;
-}
 
 function fmtPct(x){
   if (!Number.isFinite(x)) return "—";
@@ -568,7 +572,6 @@ document.getElementById("coverageNote").textContent =
   high.push(bandMax);
 }
 
-
   // Chart title
   document.getElementById("chartTitle").textContent = `${eventLabel} • ballpark trajectory`;
 
@@ -644,6 +647,15 @@ document.getElementById("coverageNote").textContent =
       }
     }
   });
+}
+
+function getModelForEvent(eventCode){
+  // Preferred: use models.js if it exposes SWIM_MODELS keyed by your event codes
+  const m = window.SWIM_MODELS?.[eventCode];
+  if (m) return m;
+
+  // No model found → return null and we’ll fall back
+  return null;
 }
 
 /* -------------------------
