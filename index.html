@@ -243,7 +243,6 @@
         </div>
         <div class="small" id="modelStatus" style="margin-top:8px;"></div>
 
-
         <div class="outputs" id="outputs">
           <div class="small">Predicted next year (age <span id="ageNext">—</span>)</div>
           <div class="big"><span id="predMedian">—</span></div>
@@ -676,12 +675,7 @@ document.getElementById("predictBtn").addEventListener("click", () => {
   const mappedKey = (typeof EVENT_TO_MODEL_KEY !== "undefined") ? EVENT_TO_MODEL_KEY[event] : "(no mapping)";
   const nKeys = window.SWIM_MODELS ? Object.keys(window.SWIM_MODELS).length : 0;
 
-  document.getElementById("modelStatus").textContent =
-    model
-      ? `✅ Model loaded for ${event} (key: ${mappedKey}). Total models: ${nKeys}`
-      : `⚠️ No model found for ${event} (key: ${mappedKey}). Total models: ${nKeys}`;
-
-  if (!Number.isFinite(age) || !Number.isFinite(time)) {
+    if (!Number.isFinite(age) || !Number.isFinite(time)) {
     alert("Please enter a valid age and time (seconds or mm:ss.xx).");
     return;
   }
