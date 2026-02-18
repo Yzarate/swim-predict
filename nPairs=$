@@ -226,7 +226,7 @@
         <div class="row">
           <div>
             <label for="age">Age (years)</label>
-            <input id="age" type="number" step="0.1" value="11" />
+            <input id="age" type="number" step="1" min="6" max="18" value="11" />
           </div>
           <div>
             <label for="sex">Sex</label>
@@ -564,11 +564,28 @@ const pctImproveGirls50BreastSCY = {
 };
 
 function getPctImprove(ageFrom, tier, improveTable){
-  const t = improveTable[tier] || improveTable["Overall"];
-  const row = t?.[ageFrom] || improveTable["Overall"]?.[ageFrom];
-  return row || null;
-}
+  const MIN_TIER_N = 20;
+  const MIN_OVERALL_N = 15;
 
+  const tierTable = improveTable?.[tier];
+  const overallTable = improveTable?.["Overall"];
+
+  const tierRow = tierTable?.[ageFrom] || null;
+  const overallRow = overallTable?.[ageFrom] || null;
+
+  // If tier row exists and has enough n (or no n provided), use it
+  if (tierRow) {
+    if (!Number.isFinite(tierRow.n) || tierRow.n >= MIN_TIER_N) return tierRow;
+  }
+
+  // Otherwise fall back to overall if available and sufficient
+  if (overallRow) {
+    if (!Number.isFinite(overallRow.n) || overallRow.n >= MIN_OVERALL_N) return overallRow;
+  }
+
+  // Nothing reliable
+  return null;
+}
 function applyPct(timeSec, pct){
   // pct is % improvement; positive means faster -> lower time
   return timeSec * (1 - (pct/100));
@@ -768,7 +785,7 @@ function predictNextTimeFromModel(timeNow, model) {
    Predict Button
 --------------------------*/
 document.getElementById("predictBtn").addEventListener("click", () => {
-  const age = parseFloat(document.getElementById("age").value);
+  const age = parseInt(document.getElementById("age").value, 10);
   const time = parseSwimTimeToSeconds(document.getElementById("time").value);
   const event = document.getElementById("event").value;
 
@@ -839,8 +856,9 @@ const improveTable =
     return;
   }
 
-  document.getElementById("pctUsed").textContent =
-  `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)}) • nPairs=${pct.n ?? "?"}`;
+  const nTxt = Number.isFinite(pct.n) ? ` • nPairs=${pct.n}` : "";
+document.getElementById("pctUsed").textContent =
+  `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})${nTxt}`;
 
   const nextAge = Math.floor(age) + 1;
   const pred50 = applyPct(time, pct.p50);
@@ -909,4 +927,5 @@ drawChart(11, 30.31, "Intermediate", pctImproveGirls50FreeSCY, "Girls 50 Free (S
 
 </body>
 </html>
+
 
