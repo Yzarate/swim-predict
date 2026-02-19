@@ -441,127 +441,12 @@ function getStandardLetter(ageInt, timeSec, standardsByGroup){
    (Use your existing 50 Free table here if you already had it.
     I’m providing a reasonable placeholder structure PLUS the full 100 Free table you computed.)
 --------------------------*/
+let IMPROVEMENT_MODELS = null; // loaded from improvement_models.json
 
 // IMPORTANT:
 // If you already have a real 50 Free improvement object from your prior work,
 // replace the placeholder below with your real one.
 // The key name MUST be: pctImproveGirls50FreeSCY
-
-const pctImproveGirls50FreeSCY = {
-  Beginner: {
-    9: { p25: 7.43, p50: 13.12, p75: 16.39 },
-    10: { p25: 10.44, p50: 12.26, p75: 15.08 },
-    11: { p25: 8.15, p50: 10.40, p75: 11.70 },
-    12: { p25: 5.61, p50: 6.49, p75: 7.67 },
-    13: { p25: 5.29, p50: 10.27, p75: 11.56 },
-    14: { p25: 0.77, p50: 4.02, p75: 5.72 },
-    15: { p25: 1.40, p50: 2.01, p75: 2.63 },
-  },
-  Intermediate: {
-    9: { p25: 7.59, p50: 9.33, p75: 11.09 },
-    10: { p25: 6.09, p50: 9.31, p75: 11.44 },
-    11: { p25: 4.14, p50: 6.28, p75: 7.41 },
-    12: { p25: 2.65, p50: 4.06, p75: 5.60 },
-    13: { p25: 1.73, p50: 3.00, p75: 4.14 },
-    14: { p25: -3.17, p50: 0.27, p75: 3.39 },
-    15: { p25: -5.27, p50: 1.91, p75: 6.44 },
-  },
-  Advanced: {
-    10: { p25: 4.26, p50: 6.18, p75: 7.71 },
-    11: { p25: -0.08, p50: 2.19, p75: 5.36 },
-    12: { p25: 2.14, p50: 3.70, p75: 4.75 },
-    13: { p25: 0.24, p50: 1.48, p75: 3.46 },
-    14: { p25: 1.09, p50: 1.94, p75: 3.15 },
-    15: { p25: -1.88, p50: -1.14, p75: 0.07 },
-  },
-};
-  
-// Girls 100 Free SCY — from your processed dataset
-const pctImproveGirls100FreeSCY = {
-  Beginner: {
-    6:{p25:6.83,p50:8.69,p75:14.60},
-    7:{p25:8.14,p50:14.72,p75:18.26},
-    8:{p25:8.32,p50:12.49,p75:16.15},
-    9:{p25:7.75,p50:11.54,p75:14.64},
-    10:{p25:6.71,p50:9.55,p75:13.77},
-    11:{p25:4.58,p50:7.65,p75:10.07},
-    12:{p25:2.55,p50:4.19,p75:6.74},
-    13:{p25:0.56,p50:2.48,p75:4.68},
-    14:{p25:0.00,p50:1.09,p75:2.69},
-    15:{p25:-2.16,p50:-0.24,p75:0.57}
-  },
-  Intermediate: {
-    8:{p25:9.00,p50:11.78,p75:12.52},
-    9:{p25:7.56,p50:10.62,p75:13.11},
-    10:{p25:6.44,p50:8.97,p75:12.90},
-    11:{p25:4.29,p50:7.28,p75:9.64},
-    12:{p25:2.05,p50:3.42,p75:6.18},
-    13:{p25:0.06,p50:2.03,p75:4.11},
-    14:{p25:0.00,p50:0.92,p75:2.40}
-  },
-  Advanced: {
-    9:{p25:5.68,p50:6.39,p75:6.96},
-    10:{p25:4.42,p50:5.62,p75:6.55},
-    11:{p25:3.89,p50:5.31,p75:6.95},
-    12:{p25:1.31,p50:2.87,p75:4.82},
-    13:{p25:-0.41,p50:1.21,p75:2.93}
-  },
-  Overall: {
-    6:{p25:6.83,p50:8.69,p75:14.60},
-    7:{p25:8.14,p50:14.72,p75:18.26},
-    8:{p25:8.25,p50:12.48,p75:15.84},
-    9:{p25:7.61,p50:11.30,p75:14.48},
-    10:{p25:6.55,p50:9.44,p75:13.67},
-    11:{p25:4.41,p50:7.54,p75:9.98},
-    12:{p25:2.35,p50:3.95,p75:6.61},
-    13:{p25:0.37,p50:2.33,p75:4.49},
-    14:{p25:0.00,p50:1.07,p75:2.58},
-    15:{p25:-2.16,p50:-0.24,p75:0.57}
-  }
-};
-
-// Girls 50 Breast SCY — from your processed dataset (Strict365)
-const pctImproveGirls50BreastSCY = {
-  "Advanced": {
-    10: { p25: 3.1973842283, p50: 7.4956991890, p75: 9.4406763242, n: 7 },
-    11: { p25: 4.1298377778, p50: 6.9083242043, p75: 9.6868106307, n: 2 },
-    12: { p25: 5.9068219634, p50: 5.9068219634, p75: 5.9068219634, n: 1 },
-    13: { p25: 1.7683473818, p50: 1.7683473818, p75: 1.7683473818, n: 1 },
-    14: { p25: 4.9835868619, p50: 4.9835868619, p75: 4.9835868619, n: 1 }
-  },
-  "Beginner": {
-    6: { p25: 10.8722076736, p50: 11.9423243430, p75: 13.7640653358, n: 7 },
-    7: { p25: 12.3518786687, p50: 16.0687820397, p75: 20.9627393873, n: 26 },
-    8: { p25: 8.8709682286, p50: 11.9870041494, p75: 15.5070394378, n: 44 },
-    9: { p25: 7.8434670066, p50: 11.6639332943, p75: 16.4094839010, n: 70 },
-    10:{ p25: 11.1362346320, p50: 14.7564469914, p75: 16.5934873948, n: 37 },
-    11:{ p25: 7.2838996336, p50: 10.4260009354, p75: 13.2541378182, n: 9 },
-    12:{ p25: 3.9392063854, p50: 7.0071005756, p75: 9.3005958674, n: 3 },
-    13:{ p25: 2.5436744238, p50: 2.5436744238, p75: 2.5436744238, n: 1 }
-  },
-  "Intermediate": {
-    8: { p25: 8.5179137005, p50: 11.3509253749, p75: 15.2431866236, n: 5 },
-    9: { p25: 6.6283342518, p50: 9.9934129041, p75: 15.4635415641, n: 14 },
-    10:{ p25: 7.8858348285, p50: 11.4000000000, p75: 15.5466717884, n: 42 },
-    11:{ p25: 5.1657894737, p50: 8.4313725490, p75: 10.5970149254, n: 28 },
-    12:{ p25: 3.9111111111, p50: 5.9777777778, p75: 8.0444444444, n: 9 },
-    13:{ p25: 1.2600000000, p50: 3.1153846154, p75: 4.9700000000, n: 9 },
-    14:{ p25: 0.0000000000, p50: 1.2500000000, p75: 3.8100000000, n: 4 },
-    15:{ p25: 0.0000000000, p50: 0.0000000000, p75: 0.0000000000, n: 1 }
-  },
-  "Overall": {
-    6: { p25: 10.8722076736, p50: 11.9423243430, p75: 13.7640653358, n: 7 },
-    7: { p25: 12.3518786687, p50: 16.0687820397, p75: 20.9627393873, n: 26 },
-    8: { p25: 8.5179137005, p50: 11.3509253749, p75: 15.2431866236, n: 49 },
-    9: { p25: 6.6283342518, p50: 9.9934129041, p75: 15.4635415641, n: 84 },
-    10:{ p25: 7.8858348285, p50: 11.4000000000, p75: 15.5466717884, n: 86 },
-    11:{ p25: 5.1657894737, p50: 8.4313725490, p75: 10.5970149254, n: 39 },
-    12:{ p25: 3.9111111111, p50: 5.9777777778, p75: 8.0444444444, n: 13 },
-    13:{ p25: 1.2600000000, p50: 3.1153846154, p75: 4.9700000000, n: 11 },
-    14:{ p25: 0.0000000000, p50: 1.2500000000, p75: 3.8100000000, n: 5 },
-    15:{ p25: 0.0000000000, p50: 0.0000000000, p75: 0.0000000000, n: 1 }
-  }
-};
 
 function getPctImprove(ageFrom, tier, improveTable){
   const MIN_TIER_N = 20;
@@ -816,11 +701,7 @@ if (np) {
   (event === "G_100FR_SCY") ? standardsGirls100FreeSCY :
   null;
 
-const improveTable =
-  (event === "G_50FR_SCY") ? pctImproveGirls50FreeSCY :
-  (event === "G_50BR_SCY") ? pctImproveGirls50BreastSCY :
-  (event === "G_100FR_SCY") ? pctImproveGirls100FreeSCY :
-  null;
+const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
 
   const eventLabel = getEventLabel(event);
 
@@ -906,8 +787,7 @@ function updateEventDropdownStatus(){
     const hasStandards =
   (code === "G_50FR_SCY") || (code === "G_50BR_SCY") || (code === "G_100FR_SCY");
 
-const hasImprove =
-  (code === "G_50FR_SCY") || (code === "G_50BR_SCY") || (code === "G_100FR_SCY");
+    const hasImprove = !!(IMPROVEMENT_MODELS && IMPROVEMENT_MODELS[code]);
 
     if (hasStandards && hasImprove) {
       opt.textContent = label + " ✅ ready";
@@ -919,10 +799,40 @@ const hasImprove =
   }
 }
 
-updateEventDropdownStatus();
+async function loadImprovementModels(){
+  const res = await fetch("improvement_models.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to load improvement_models.json (${res.status})`);
+  return await res.json();
+}
 
-// Initial chart
-drawChart(11, 30.31, "Intermediate", pctImproveGirls50FreeSCY, "Girls 50 Free (SCY)");
+async function initApp(){
+  try {
+    IMPROVEMENT_MODELS = await loadImprovementModels();
+
+    // Update dropdown tags now that we know which events have data
+    updateEventDropdownStatus();
+
+    // Draw a default chart using the default selected event + default inputs
+    const event = document.getElementById("event").value;
+    const age = parseInt(document.getElementById("age").value, 10);
+    const time = parseSwimTimeToSeconds(document.getElementById("time").value);
+    const eventLabel = getEventLabel(event);
+
+    const improveTable = IMPROVEMENT_MODELS[event];
+    if (improveTable && Number.isFinite(age) && Number.isFinite(time)) {
+      // Use "Intermediate" just for the initial view; user will click Predict for tier-based chart
+      drawChart(age, time, "Intermediate", improveTable, eventLabel);
+    }
+  } catch (err) {
+    console.error(err);
+    // Optional: show a friendly message
+    const cn = document.getElementById("coverageNote");
+    if (cn) cn.textContent = "Could not load improvement models. Please refresh.";
+  }
+}
+
+initApp();
+
 </script>
 
 </body>
