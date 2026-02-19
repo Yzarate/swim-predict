@@ -509,9 +509,12 @@ function applyPct(timeSec, pct){
 let chart = null;
 
 function getEventLabel(event){
-  if (event === "G_50FR_SCY") return "Girls 50 Free (SCY)";
-  if (event === "G_50BR_SCY") return "Girls 50 Breast (SCY)";
+  if (event === "G_50FR_SCY")  return "Girls 50 Free (SCY)";
   if (event === "G_100FR_SCY") return "Girls 100 Free (SCY)";
+  if (event === "G_50BR_SCY")  return "Girls 50 Breast (SCY)";
+  if (event === "G_100BR_SCY") return "Girls 100 Breast (SCY)";
+  if (event === "G_50BK_SCY")  return "Girls 50 Back (SCY)";
+  if (event === "G_100BK_SCY") return "Girls 100 Back (SCY)";
   return "Event";
 }
 
@@ -723,9 +726,12 @@ if (np) {
   const ageInt = clamp(Math.floor(age), 6, 18);
 
   const standards =
-  (event === "G_50FR_SCY") ? standardsGirls50FreeSCY :
-  (event === "G_50BR_SCY") ? standardsGirls50BreastSCY :
+  (event === "G_50FR_SCY")  ? standardsGirls50FreeSCY :
   (event === "G_100FR_SCY") ? standardsGirls100FreeSCY :
+  (event === "G_50BR_SCY")  ? standardsGirls50BreastSCY :
+  (event === "G_100BR_SCY") ? standardsGirls100BreastSCY :
+  (event === "G_50BK_SCY")  ? standardsGirls50BackSCY :
+  (event === "G_100BK_SCY") ? standardsGirls100BackSCY :
   null;
 
 const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
