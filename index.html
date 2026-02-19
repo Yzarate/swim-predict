@@ -806,28 +806,34 @@ function updateEventDropdownStatus(){
   const sel = document.getElementById("event");
   if (!sel) return;
 
+  // Which events have standards wired in index.html
+  const HAS_STANDARDS = new Set([
+    "G_50FR_SCY",
+    "G_100FR_SCY",
+    "G_50BR_SCY",
+    "G_100BR_SCY",
+    "G_50BK_SCY",
+    "G_100BK_SCY"
+  ]);
+
   for (const opt of sel.options) {
     const code = opt.value;
 
-    // Remove any previous tag
-    let label = opt.textContent
+    // Strip any existing suffix tags (so it doesn't accumulate)
+    const baseLabel = opt.textContent
       .replace(" ✅ ready", "")
       .replace(" ⚠ coverage only", "")
       .replace(" — coming soon", "");
 
-    const hasModel = !!getModelForEvent(code);
-
-    const hasStandards =
-  (code === "G_50FR_SCY") || (code === "G_50BR_SCY") || (code === "G_100FR_SCY");
-
     const hasImprove = !!(IMPROVEMENT_MODELS && IMPROVEMENT_MODELS[code]);
+    const hasStandards = HAS_STANDARDS.has(code);
 
-    if (hasStandards && hasImprove) {
-      opt.textContent = label + " ✅ ready";
-    } else if (hasModel) {
-      opt.textContent = label + " ⚠ coverage only";
+    if (hasImprove && hasStandards) {
+      opt.textContent = baseLabel + " ✅ ready";
+    } else if (hasImprove) {
+      opt.textContent = baseLabel + " ⚠ coverage only";
     } else {
-      opt.textContent = label + " — coming soon";
+      opt.textContent = baseLabel + " — coming soon";
     }
   }
 }
