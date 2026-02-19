@@ -479,25 +479,27 @@ function getPctImprove(ageFrom, tier, improveTable){
   const MIN_TIER_N = 20;
   const MIN_OVERALL_N = 15;
 
-  const tierTable = improveTable?.[tier];
-  const overallTable = improveTable?.["Overall"];
+  if (!improveTable) return null;
 
-  const tierRow = tierTable?.[ageFrom] || null;
-  const overallRow = overallTable?.[ageFrom] || null;
+  // Support both numeric and string keys defensively
+  const k = String(ageFrom);
 
-  // If tier row exists and has enough n (or no n provided), use it
+  const tierRow = (improveTable[tier] && (improveTable[tier][k] ?? improveTable[tier][ageFrom])) || null;
+  const overallRow = (improveTable["Overall"] && (improveTable["Overall"][k] ?? improveTable["Overall"][ageFrom])) || null;
+
+  // Use tier row if present and sufficiently sized (or if n missing)
   if (tierRow) {
     if (!Number.isFinite(tierRow.n) || tierRow.n >= MIN_TIER_N) return tierRow;
   }
 
-  // Otherwise fall back to overall if available and sufficient
+  // Otherwise fall back to overall if present and sufficiently sized (or if n missing)
   if (overallRow) {
     if (!Number.isFinite(overallRow.n) || overallRow.n >= MIN_OVERALL_N) return overallRow;
   }
 
-  // Nothing reliable
   return null;
 }
+
 function applyPct(timeSec, pct){
   // pct is % improvement; positive means faster -> lower time
   return timeSec * (1 - (pct/100));
