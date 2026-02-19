@@ -545,12 +545,14 @@ document.getElementById("coverageNote").textContent =
   `Projection ends at age ${lastAgePlotted} because year-to-year data is sparse beyond that age for this tier/event.`;
 
   // Need the improvement for (a-1) -> a
-  const pctRow =
-    getPctImprove(a - 1, tier, improveTable) ||
-    getPctImprove(a - 1, "Overall", improveTable);
+  // Try tier first; if missing, fall back to Overall
+let pctRow = getPctImprove(a - 1, tier, improveTable);
 
-  // If we don't have year-to-year data, STOP the chart here
-  if (!pctRow) break;
+// If tier missing for this age step, try Overall explicitly
+if (!pctRow) pctRow = getPctImprove(a - 1, "Overall", improveTable);
+
+// If still missing, stop chart
+if (!pctRow) break;
 
   // Step forward one year
   tMed = applyPct(tMed, pctRow.p50);
