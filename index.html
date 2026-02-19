@@ -554,7 +554,20 @@ let pctRow = getPctImprove(a - 1, tier, improveTable);
 if (!pctRow) pctRow = getPctImprove(a - 1, "Overall", improveTable);
 
 // If still missing, stop chart
-if (!pctRow) break;
+if (!pctRow) {
+  // Try to report why we stopped (show overall n for this step if available)
+  const k = String(a - 1);
+  const overallRow = improveTable?.["Overall"]?.[k] ?? improveTable?.["Overall"]?.[a - 1];
+  const overallN = overallRow && Number.isFinite(overallRow.n) ? overallRow.n : null;
+
+  const lastAgePlotted = ages[ages.length - 1];
+  const msg = (overallN != null)
+    ? `Projection stops at age ${lastAgePlotted} because overall nPairs for ${a-1}→${a} is ${overallN} (below minimum).`
+    : `Projection stops at age ${lastAgePlotted} due to limited consecutive-year data beyond this age.`;
+
+  document.getElementById("coverageNote").textContent = msg;
+  break;
+}
 
   // Step forward one year
   tMed = applyPct(tMed, pctRow.p50);
