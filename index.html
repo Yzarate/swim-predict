@@ -414,6 +414,33 @@ const standardsGirls50BreastSCY = {
   "17-18": { B:40.39, BB:37.49, A:34.59, AA:33.19, AAA:31.69, AAAA:30.29 }
 };
 
+// Girls 50 Back SCY (age group)
+const standardsGirls50BackSCY = {
+  "10U":   { B:48.59, BB:43.29, A:37.99, AA:36.19, AAA:34.39, AAAA:32.59 },
+  "11-12": { B:38.79, BB:35.99, A:33.19, AA:31.79, AAA:30.49, AAAA:29.09 },
+  "13-14": { B:36.19, BB:33.69, A:31.09, AA:29.79, AAA:28.49, AAAA:27.19 },
+  "15-16": { B:35.29, BB:32.69, A:30.19, AA:28.99, AAA:27.69, AAAA:26.49 },
+  "17-18": { B:34.59, BB:32.19, A:29.69, AA:28.39, AAA:27.19, AAAA:25.99 }
+};
+
+// Girls 100 Back SCY (age group)
+const standardsGirls100BackSCY = {
+  "10U":   { B:105.79, BB:93.99, A:82.29, AA:78.39, AAA:74.49, AAAA:70.59 },
+  "11-12": { B:86.59, BB:79.79, A:72.99, AA:69.59, AAA:66.19, AAAA:62.69 },
+  "13-14": { B:76.89, BB:71.39, A:65.89, AA:63.19, AAA:60.49, AAAA:57.69 },
+  "15-16": { B:74.69, BB:69.39, A:64.09, AA:61.39, AAA:58.69, AAAA:56.09 },
+  "17-18": { B:73.39, BB:68.09, A:62.89, AA:60.29, AAA:57.69, AAAA:54.99 }
+};
+
+// Girls 100 Breast SCY (age group)
+const standardsGirls100BreastSCY = {
+  "10U":   { B:120.29, BB:106.89, A:93.59, AA:89.09, AAA:84.69, AAAA:80.19 },
+  "11-12": { B:96.49,  BB:89.29,  A:82.19, AA:78.59, AAA:75.09, AAAA:71.49 },
+  "13-14": { B:88.69,  BB:82.29,  A:75.99, AA:72.89, AAA:69.69, AAAA:66.49 },
+  "15-16": { B:85.89,  BB:79.79,  A:73.69, AA:70.59, AAA:67.49, AAAA:64.49 },
+  "17-18": { B:84.79,  BB:78.79,  A:72.69, AA:69.69, AAA:66.69, AAAA:63.59 }
+};
+
 function getStandardLetter(ageInt, timeSec, standardsByGroup){
   const group = getAgeGroupKey(ageInt);
   const s = standardsByGroup[group];
