@@ -526,6 +526,7 @@ function getEventLabel(event){
   if (event === "G_100BR_SCY") return "Girls 100 Breast (SCY)";
   if (event === "G_50BK_SCY")  return "Girls 50 Back (SCY)";
   if (event === "G_100BK_SCY") return "Girls 100 Back (SCY)";
+  if (event === "G_50FL_SCY")  return "Girls 50 Fly (SCY)";
   return "Event";
 }
 
@@ -841,6 +842,7 @@ function updateEventDropdownStatus(){
     "G_100BR_SCY",
     "G_50BK_SCY",
     "G_100BK_SCY"
+    "G_50FL_SCY",
   ]);
 
   for (const opt of sel.options) {
