@@ -423,13 +423,22 @@ const standardsGirls50BackSCY = {
   "17-18": { B:34.59, BB:32.19, A:29.69, AA:28.39, AAA:27.19, AAAA:25.99 }
 };
 
-// Girls 50 Fly SCY (age group)
+// Girls 50 Fly SCY (age group) — USA Swimming 2024–2028 Motivational Standards
 const standardsGirls50FlySCY = {
-  "10U":   { B:47.59, BB:42.39, A:37.19, AA:35.39, AAA:33.49, AAAA:31.69 },
-  "11-12": { B:38.09, BB:35.29, A:32.39, AA:30.89, AAA:29.39, AAAA:27.99 },
-  "13-14": { B:36.09, BB:33.49, A:30.89, AA:29.39, AAA:27.99, AAAA:26.59 },
-  "15-16": { B:35.19, BB:32.59, A:30.09, AA:28.69, AAA:27.29, AAAA:25.89 },
-  "17-18": { B:34.59, BB:32.09, A:29.59, AA:28.19, AAA:26.79, AAAA:25.39 }
+  "10U":   { B:48.39, BB:42.69, A:36.99, AA:35.09, AAA:33.19, AAAA:31.29 },
+  "11-12": { B:36.89, BB:34.29, A:31.59, AA:30.29, AAA:28.99, AAAA:27.69 },
+  "13-14": { B:35.79, BB:33.29, A:30.69, AA:29.39, AAA:28.19, AAAA:26.89 },
+  "15-16": { B:34.69, BB:32.29, A:29.79, AA:28.59, AAA:27.29, AAAA:26.09 },
+  "17-18": { B:34.49, BB:31.99, A:29.59, AA:28.29, AAA:27.09, AAAA:25.89 }
+};
+
+// Girls 100 Fly SCY (age group) — USA Swimming 2024–2028 Motivational Standards
+const standardsGirls100FlySCY = {
+  "10U":   { B:116.69, BB:101.39, A:86.09, AA:80.99, AAA:75.99, AAAA:70.89 },
+  "11-12": { B:85.79,  BB:78.89,  A:72.09, AA:68.59, AAA:65.19, AAAA:61.79 },
+  "13-14": { B:76.79,  BB:71.29,  A:65.89, AA:63.09, AAA:60.39, AAAA:57.59 },
+  "15-16": { B:74.39,  BB:69.09,  A:63.79, AA:61.09, AAA:58.39, AAAA:55.79 },
+  "17-18": { B:73.59,  BB:68.29,  A:63.09, AA:60.39, AAA:57.79, AAAA:55.19 }
 };
 
 // Girls 100 Back SCY (age group)
@@ -527,6 +536,7 @@ function getEventLabel(event){
   if (event === "G_50BK_SCY")  return "Girls 50 Back (SCY)";
   if (event === "G_100BK_SCY") return "Girls 100 Back (SCY)";
   if (event === "G_50FL_SCY")  return "Girls 50 Fly (SCY)";
+  if (event === "G_100FL_SCY") return "Girls 100 Fly (SCY)";
   return "Event";
 }
 
@@ -760,6 +770,7 @@ if (np) {
   (event === "G_50BK_SCY")  ? standardsGirls50BackSCY :
   (event === "G_100BK_SCY") ? standardsGirls100BackSCY :
   (event === "G_50FL_SCY")  ? standardsGirls50FlySCY :
+  (event === "G_100FL_SCY") ? standardsGirls100FlySCY :
   null;
 
 const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
@@ -843,6 +854,7 @@ function updateEventDropdownStatus(){
     "G_50BK_SCY",
     "G_100BK_SCY",
     "G_50FL_SCY",
+    "G_100FL_SCY",
   ]);
 
   for (const opt of sel.options) {
