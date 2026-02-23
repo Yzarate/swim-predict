@@ -218,7 +218,7 @@
   <!-- 200s -->
   <option value="G_200FR_SCY">Girls 200 Free (SCY)</option>
   <option value="G_200IM_SCY">Girls 200 IM (SCY)</option>
-
+  
   <!-- Distance -->
   <option value="G_500FR_SCY">Girls 500 Free (SCY)</option>
 </select>
@@ -459,6 +459,15 @@ const standardsGirls100BreastSCY = {
   "17-18": { B:84.79,  BB:78.79,  A:72.69, AA:69.69, AAA:66.69, AAAA:63.59 }
 };
 
+// Girls 200 Free SCY (age group) — USA Swimming 2024–2028 Motivational Standards
+const standardsGirls200FreeSCY = {
+  "10U":   { B:202.79, BB:180.59, A:158.39, AA:150.99, AAA:143.59, AAAA:136.19 },
+  "11-12": { B:162.59, BB:150.89, A:139.29, AA:133.49, AAA:127.69, AAAA:121.89 },
+  "13-14": { B:153.59, BB:142.69, A:131.69, AA:126.19, AAA:120.69, AAAA:115.29 },
+  "15-16": { B:148.99, BB:138.39, A:127.69, AA:122.39, AAA:117.09, AAAA:111.79 },
+  "17-18": { B:147.19, BB:136.69, A:126.19, AA:120.89, AAA:115.69, AAAA:110.39 }
+};
+
 function getStandardLetter(ageInt, timeSec, standardsByGroup){
   const group = getAgeGroupKey(ageInt);
   const s = standardsByGroup[group];
@@ -537,6 +546,7 @@ function getEventLabel(event){
   if (event === "G_100BK_SCY") return "Girls 100 Back (SCY)";
   if (event === "G_50FL_SCY")  return "Girls 50 Fly (SCY)";
   if (event === "G_100FL_SCY") return "Girls 100 Fly (SCY)";
+  if (event === "G_200FR_SCY") return "Girls 200 Free (SCY)";
   return "Event";
 }
 
@@ -771,6 +781,7 @@ if (np) {
   (event === "G_100BK_SCY") ? standardsGirls100BackSCY :
   (event === "G_50FL_SCY")  ? standardsGirls50FlySCY :
   (event === "G_100FL_SCY") ? standardsGirls100FlySCY :
+  (event === "G_200FR_SCY") ? standardsGirls200FreeSCY :
   null;
 
 const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
