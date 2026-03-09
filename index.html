@@ -468,6 +468,15 @@ const standardsGirls200FreeSCY = {
   "17-18": { B:147.19, BB:136.69, A:126.19, AA:120.89, AAA:115.69, AAAA:110.39 }
 };
 
+// Girls 200 Back SCY (age group)
+const standardsGirls200BackSCY = {
+  "10U":   { B:227.39, BB:200.99, A:174.69, AA:165.89, AAA:157.19, AAAA:148.39 },
+  "11-12": { B:183.49, BB:169.29, A:155.09, AA:147.99, AAA:140.89, AAAA:133.79 },
+  "13-14": { B:165.19, BB:153.29, A:141.39, AA:135.39, AAA:129.39, AAAA:123.39 },
+  "15-16": { B:160.59, BB:149.09, A:137.59, AA:131.89, AAA:126.09, AAAA:120.39 },
+  "17-18": { B:157.89, BB:146.49, A:135.09, AA:129.39, AAA:123.69, AAAA:117.99 }
+};
+
 function getStandardLetter(ageInt, timeSec, standardsByGroup){
   const group = getAgeGroupKey(ageInt);
   const s = standardsByGroup[group];
