@@ -556,6 +556,7 @@ function getEventLabel(event){
   if (event === "G_50FL_SCY")  return "Girls 50 Fly (SCY)";
   if (event === "G_100FL_SCY") return "Girls 100 Fly (SCY)";
   if (event === "G_200FR_SCY") return "Girls 200 Free (SCY)";
+  if (event === "G_200BK_SCY") return "Girls 200 Back (SCY)";
   return "Event";
 }
 
@@ -791,6 +792,7 @@ if (np) {
   (event === "G_50FL_SCY")  ? standardsGirls50FlySCY :
   (event === "G_100FL_SCY") ? standardsGirls100FlySCY :
   (event === "G_200FR_SCY") ? standardsGirls200FreeSCY :
+  (event === "G_200BK_SCY") ? standardsGirls200BackSCY :
   null;
 
 const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
@@ -876,6 +878,7 @@ function updateEventDropdownStatus(){
     "G_50FL_SCY",
     "G_100FL_SCY",
     "G_200FR_SCY",
+    "G_200BK_SCY",
   ]);
 
   for (const opt of sel.options) {
