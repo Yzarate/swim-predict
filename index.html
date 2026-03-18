@@ -488,6 +488,14 @@ const standardsGirls200IMSCY = {
   "15-16": { B:175.49, BB:162.79, A:150.09, AA:143.69, AAA:137.29, AAAA:130.89 },
   "17-18": { B:173.29, BB:160.69, A:148.19, AA:141.89, AAA:135.59, AAAA:129.29 }
 };
+// Girls 500 Free SCY (age group)
+const standardsGirls500FreeSCY = {
+  "10U":   { B:381.09, BB:337.89, A:294.69, AA:280.29, AAA:265.89, AAAA:251.49 },
+  "11-12": { B:314.29, BB:290.79, A:267.39, AA:255.69, AAA:244.09, AAAA:232.39 },
+  "13-14": { B:296.69, BB:274.39, A:252.09, AA:240.99, AAA:229.89, AAAA:218.79 },
+  "15-16": { B:286.69, BB:265.19, A:243.79, AA:233.09, AAA:222.39, AAAA:211.69 },
+  "17-18": { B:283.09, BB:261.89, A:240.69, AA:230.09, AAA:219.49, AAAA:208.89 }
+};
 
 function getStandardLetter(ageInt, timeSec, standardsByGroup){
   const group = getAgeGroupKey(ageInt);
@@ -570,6 +578,7 @@ function getEventLabel(event){
   if (event === "G_200FR_SCY") return "Girls 200 Free (SCY)";
   if (event === "G_200BK_SCY") return "Girls 200 Back (SCY)";
   if (event === "G_200IM_SCY") return "Girls 200 IM (SCY)";
+  if (event === "G_500FR_SCY") return "Girls 500 Free (SCY)";
   return "Event";
 }
 
@@ -807,6 +816,7 @@ if (np) {
   (event === "G_200FR_SCY") ? standardsGirls200FreeSCY :
   (event === "G_200BK_SCY") ? standardsGirls200BackSCY :
   (event === "G_200IM_SCY") ? standardsGirls200IMSCY :
+  (event === "G_500FR_SCY") ? standardsGirls500FreeSCY :
   null;
 
 const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
@@ -894,6 +904,7 @@ function updateEventDropdownStatus(){
     "G_200FR_SCY",
     "G_200BK_SCY",
     "G_200IM_SCY",
+    "G_500FR_SCY",
   ]);
 
   for (const opt of sel.options) {
