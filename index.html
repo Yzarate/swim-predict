@@ -205,6 +205,7 @@
         <select id="event">
   <!-- 50s -->
   <option value="G_50FR_SCY" selected>Girls 50 Free (SCY)</option>
+  <option value="B_50FR_SCY">Boys 50 Free (SCY) </option>
   <option value="G_50BK_SCY">Girls 50 Back (SCY)</option>
   <option value="G_50BR_SCY">Girls 50 Breast (SCY)</option>
   <option value="G_50FL_SCY">Girls 50 Fly (SCY)</option>
@@ -396,6 +397,12 @@ const standardsGirls50FreeSCY = {
   "15-16": { B:31.79, BB:29.49, A:27.29, AA:26.09, AAA:24.99, AAAA:23.89 },
   "17-18": { B:31.39, BB:29.09, A:26.89, AA:25.79, AAA:24.69, AAAA:23.49 }
 };
+const standardsBoys50FreeSCY = {
+  "10U":   { B:38.19, BB:34.59, A:31.09, AA:29.89, AAA:28.69, AAAA:27.49 },
+  "11-12": { B:32.79, BB:30.49, A:28.09, AA:26.99, AAA:25.79, AAAA:24.59 },
+  "13-14": { B:29.89, BB:27.69, A:25.59, AA:24.59, AAA:23.49, AAAA:22.39 },
+  "15-16": { B:28.29, BB:26.29, A:24.19, AA:23.19, AAA:22.19, AAAA:21.19 }
+};
 
 // Girls 100 Free SCY (age group)
 const standardsGirls100FreeSCY = {
@@ -566,6 +573,7 @@ let chart = null;
 
 function getEventLabel(event){
   if (event === "G_50FR_SCY")  return "Girls 50 Free (SCY)";
+  if (event === "B_50FR_SCY") return "Boys 50 Free (SCY)";
   if (event === "G_100FR_SCY") return "Girls 100 Free (SCY)";
   if (event === "G_50BR_SCY")  return "Girls 50 Breast (SCY)";
   if (event === "G_100BR_SCY") return "Girls 100 Breast (SCY)";
@@ -804,6 +812,7 @@ if (np) {
 
   const standards =
   (event === "G_50FR_SCY")  ? standardsGirls50FreeSCY :
+  (event === "B_50FR_SCY") ? standardsBoys50FreeSCY :
   (event === "G_100FR_SCY") ? standardsGirls100FreeSCY :
   (event === "G_50BR_SCY")  ? standardsGirls50BreastSCY :
   (event === "G_100BR_SCY") ? standardsGirls100BreastSCY :
@@ -892,6 +901,7 @@ function updateEventDropdownStatus(){
   // Which events have standards wired in index.html
   const HAS_STANDARDS = new Set([
     "G_50FR_SCY",
+    "B_50FR_SCY",
     "G_100FR_SCY",
     "G_50BR_SCY",
     "G_100BR_SCY",
