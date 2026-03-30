@@ -897,7 +897,6 @@ function updateEventDropdownStatus(){
   // Which events have standards wired in index.html
   const HAS_STANDARDS = new Set([
     "G_50FR_SCY",
-    "B_50FR_SCY",
     "G_100FR_SCY",
     "G_50BR_SCY",
     "G_100BR_SCY",
@@ -909,6 +908,8 @@ function updateEventDropdownStatus(){
     "G_200BK_SCY",
     "G_200IM_SCY",
     "G_500FR_SCY",
+    "B_50FR_SCY",
+    "B_50FL_SCY",
   ]);
 
   for (const opt of sel.options) {
