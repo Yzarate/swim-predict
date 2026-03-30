@@ -557,7 +557,90 @@ function getPctImprove(ageFrom, tier, improveTable){
 
   return null;
 }
+function clamp01(x){
+  return Math.max(0, Math.min(1, x));
+}
 
+function getTierBlendWeights(ageInt, timeSec, standardsByGroup){
+  const group = getAgeGroupKey(ageInt);
+  const s = standardsByGroup?.[group];
+  if (!s) {
+    return { Beginner: 1, Intermediate: 0, Advanced: 0, mode: "single", label: "Beginner" };
+  }
+
+  const base = getStandardLetter(ageInt, timeSec, standardsByGroup).tier;
+
+  // 3% blending window around the tier boundaries
+  const BLEND_PCT = 0.03;
+
+  const bb = s.BB; // Beginner <-> Intermediate boundary
+  const aa = s.AA; // Intermediate <-> Advanced boundary
+
+  const bbWin = bb * BLEND_PCT;
+  const aaWin = aa * BLEND_PCT;
+
+  // Near BB boundary: blend Beginner and Intermediate
+  if (Number.isFinite(bb) && timeSec >= (bb - bbWin) && timeSec <= (bb + bbWin)) {
+    const x = clamp01((timeSec - (bb - bbWin)) / (2 * bbWin));
+    // x=0 => faster side => Intermediate
+    // x=1 => slower side => Beginner
+    return {
+      Beginner: x,
+      Intermediate: 1 - x,
+      Advanced: 0,
+      mode: "blend",
+      label: "Beginner + Intermediate"
+    };
+  }
+
+  // Near AA boundary: blend Intermediate and Advanced
+  if (Number.isFinite(aa) && timeSec >= (aa - aaWin) && timeSec <= (aa + aaWin)) {
+    const x = clamp01((timeSec - (aa - aaWin)) / (2 * aaWin));
+    // x=0 => faster side => Advanced
+    // x=1 => slower side => Intermediate
+    return {
+      Beginner: 0,
+      Intermediate: x,
+      Advanced: 1 - x,
+      mode: "blend",
+      label: "Intermediate + Advanced"
+    };
+  }
+
+  return {
+    Beginner: base === "Beginner" ? 1 : 0,
+    Intermediate: base === "Intermediate" ? 1 : 0,
+    Advanced: base === "Advanced" ? 1 : 0,
+    mode: "single",
+    label: base
+  };
+}
+
+function getBlendedPctImprove(ageFrom, ageInt, timeSec, standardsByGroup, improveTable){
+  const w = getTierBlendWeights(ageInt, timeSec, standardsByGroup);
+
+  const rows = [
+    { tier: "Beginner", weight: w.Beginner, row: getPctImprove(ageFrom, "Beginner", improveTable) },
+    { tier: "Intermediate", weight: w.Intermediate, row: getPctImprove(ageFrom, "Intermediate", improveTable) },
+    { tier: "Advanced", weight: w.Advanced, row: getPctImprove(ageFrom, "Advanced", improveTable) }
+  ].filter(x => x.weight > 0 && x.row);
+
+  if (!rows.length) return null;
+
+  const totalWeight = rows.reduce((sum, x) => sum + x.weight, 0);
+  if (totalWeight <= 0) return null;
+
+  const norm = rows.map(x => ({ ...x, weight: x.weight / totalWeight }));
+
+  return {
+    p25: norm.reduce((sum, x) => sum + x.weight * x.row.p25, 0),
+    p50: norm.reduce((sum, x) => sum + x.weight * x.row.p50, 0),
+    p75: norm.reduce((sum, x) => sum + x.weight * x.row.p75, 0),
+    n: null,
+    sourceLabel: w.label,
+    blended: w.mode === "blend"
+  };
+}
 function applyPct(timeSec, pct){
   // pct is % improvement; positive means faster -> lower time
   return timeSec * (1 - (pct/100));
@@ -855,16 +938,17 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
   document.getElementById("stdPill").className = "pill";
 
   // Use % improvement tables (original working approach)
-  const pct = getPctImprove(ageInt, std.tier, improveTable);
+  const pct = getBlendedPctImprove(ageInt, ageInt, time, standards, improveTable);
   if (!pct) {
     alert("Not enough data at this age to predict yet.");
     return;
   }
 
   const nTxt = Number.isFinite(pct.n) ? ` • nPairs=${pct.n}` : "";
+const pctLabel = pct.blended ? `${pct.sourceLabel} (blended)` : pct.sourceLabel;
 document.getElementById("pctUsed").textContent =
-  `Model used (${std.tier}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})${nTxt}`;
-
+  `Model used (${pctLabel}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})${nTxt}`;
+  
   const nextAge = Math.floor(age) + 1;
   const pred50 = applyPct(time, pct.p50);
   const pred25 = applyPct(time, pct.p25);
