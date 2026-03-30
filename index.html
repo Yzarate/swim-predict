@@ -575,7 +575,6 @@ let chart = null;
 
 function getEventLabel(event){
   if (event === "G_50FR_SCY")  return "Girls 50 Free (SCY)";
-  if (event === "B_50FR_SCY") return "Boys 50 Free (SCY)";
   if (event === "G_100FR_SCY") return "Girls 100 Free (SCY)";
   if (event === "G_50BR_SCY")  return "Girls 50 Breast (SCY)";
   if (event === "G_100BR_SCY") return "Girls 100 Breast (SCY)";
@@ -587,6 +586,8 @@ function getEventLabel(event){
   if (event === "G_200BK_SCY") return "Girls 200 Back (SCY)";
   if (event === "G_200IM_SCY") return "Girls 200 IM (SCY)";
   if (event === "G_500FR_SCY") return "Girls 500 Free (SCY)";
+  if (event === "B_50FR_SCY") return "Boys 50 Free (SCY)";
+  if (event === "B_50FL_SCY") return "Boys 50 Fly (SCY)";
   return "Event";
 }
 
@@ -814,7 +815,6 @@ if (np) {
 
   const standards =
   (event === "G_50FR_SCY")  ? standardsGirls50FreeSCY :
-  (event === "B_50FR_SCY") ? standardsBoys50FreeSCY :
   (event === "G_100FR_SCY") ? standardsGirls100FreeSCY :
   (event === "G_50BR_SCY")  ? standardsGirls50BreastSCY :
   (event === "G_100BR_SCY") ? standardsGirls100BreastSCY :
@@ -826,6 +826,8 @@ if (np) {
   (event === "G_200BK_SCY") ? standardsGirls200BackSCY :
   (event === "G_200IM_SCY") ? standardsGirls200IMSCY :
   (event === "G_500FR_SCY") ? standardsGirls500FreeSCY :
+  (event === "B_50FR_SCY") ? standardsBoys50FreeSCY :
+  (event === "B_50FL_SCY") ? standardsBoys50FlySCY :
   null;
 
 const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
