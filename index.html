@@ -864,19 +864,28 @@ function getModelForEvent(eventCode){
   return all[key] || null;
 }
 
-function predictNextTimeFromModel(timeNow, model) {
-  // Model predicts DROP in seconds (positive = faster).
-  const dropBase = model.slope * timeNow + model.intercept;
+function predictNextTimeFromModel(timeNow, modelCell) {
+  // New model predicts percent improvement.
+  // p50/p25/p75 are percentages, e.g. 5.94 means 5.94%.
 
-  const drop50 = dropBase + model.residP50;
-  const drop25 = dropBase + model.residP25;
-  const drop75 = dropBase + model.residP75;
+  const imp50 = modelCell.p50 / 100;
+  const imp25 = modelCell.p25 / 100;
+  const imp75 = modelCell.p75 / 100;
 
-  // Convert "drop" into "next time"
-  const next50 = timeNow - drop50;
-  const next25 = timeNow - drop25;
-  const next75 = timeNow - drop75;
+  const next50 = timeNow * (1 - imp50);
+  const next25 = timeNow * (1 - imp25);
+  const next75 = timeNow * (1 - imp75);
 
+  return {
+    next50,
+    next25,
+    next75,
+    improvement50: modelCell.p50,
+    improvement25: modelCell.p25,
+    improvement75: modelCell.p75,
+    n: modelCell.n
+  };
+}
   // Typical range should be ordered low..high in TIME (lower time = faster)
   const lo = Math.min(next25, next75);
   const hi = Math.max(next25, next75);
