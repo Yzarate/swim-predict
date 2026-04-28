@@ -1048,13 +1048,11 @@ function updateEventDropdownStatus(){
     const hasImprove = !!(IMPROVEMENT_MODELS && IMPROVEMENT_MODELS[code]);
     const hasStandards = HAS_STANDARDS.has(code);
 
-    if (hasImprove && hasStandards) {
-      opt.textContent = baseLabel + " ✅ ready";
-    } else if (hasImprove) {
-      opt.textContent = baseLabel + " ⚠ coverage only";
-    } else {
-      opt.textContent = baseLabel + " — coming soon";
-    }
+    if (hasImprove) {
+  opt.textContent = baseLabel + " ✅ ready";
+} else {
+  opt.textContent = baseLabel + " — coming soon";
+}
   }
 }
 
