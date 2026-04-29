@@ -959,7 +959,7 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
     return;
   }
 
-  const std = getStandardLetter(ageInt, time, standards);
+  const std = standards ? getStandardLetter(ageInt, time, standards) : "—";
 
   // Pill styling
   document.getElementById("tierPill").textContent = `Tier: ${std.tier}`;
