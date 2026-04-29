@@ -941,7 +941,7 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
   const eventLabel = getEventLabel(event);
 
   // If not wired yet
-  if (!standards || !improveTable) {
+  if (!improveTable) {
     document.getElementById("outputs").style.display = "block";
     document.getElementById("tierPill").textContent = "Tier: Coming soon";
     document.getElementById("tierPill").className = "pill warn";
