@@ -952,7 +952,10 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
     document.getElementById("predRange").textContent = "—";
     document.getElementById("pctUsed").textContent = "";
     document.getElementById("coverageNote").textContent = "";
-    drawChart(age, time, "Beginner", pctImproveGirls100FreeSCY, eventLabel); // placeholder chart
+
+    if (improveTable) {
+      drawChart(age, time, "Overall", improveTable, eventLabel);
+    }
     return;
   }
 
