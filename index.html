@@ -1068,7 +1068,7 @@ TIME_STANDARDS = await loadTimeStandards();
   }
 }
 async function loadTimeStandards() {
-  const res = await fetch("time_standards.json", { cache: "no-store" });
+  const res = await fetch("time_standards_scy_2024_2028.json", { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load time_standards.json (${res.status})`);
   return await res.json();
 }
