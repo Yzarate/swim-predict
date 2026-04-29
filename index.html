@@ -919,21 +919,42 @@ if (np) {
 
   const ageInt = clamp(Math.floor(age), 6, 18);
 
-  const standards =
+ const standards =
   (event === "G_50FR_SCY")  ? standardsGirls50FreeSCY :
   (event === "G_100FR_SCY") ? standardsGirls100FreeSCY :
-  (event === "G_50BR_SCY")  ? standardsGirls50BreastSCY :
-  (event === "G_100BR_SCY") ? standardsGirls100BreastSCY :
+  (event === "G_200FR_SCY") ? standardsGirls200FreeSCY :
+  (event === "G_500FR_SCY") ? standardsGirls500FreeSCY :
+
   (event === "G_50BK_SCY")  ? standardsGirls50BackSCY :
   (event === "G_100BK_SCY") ? standardsGirls100BackSCY :
+  (event === "G_200BK_SCY") ? standardsGirls200BackSCY :
+
+  (event === "G_50BR_SCY")  ? standardsGirls50BreastSCY :
+  (event === "G_100BR_SCY") ? standardsGirls100BreastSCY :
+
   (event === "G_50FL_SCY")  ? standardsGirls50FlySCY :
   (event === "G_100FL_SCY") ? standardsGirls100FlySCY :
-  (event === "G_200FR_SCY") ? standardsGirls200FreeSCY :
-  (event === "G_200BK_SCY") ? standardsGirls200BackSCY :
+
   (event === "G_200IM_SCY") ? standardsGirls200IMSCY :
-  (event === "G_500FR_SCY") ? standardsGirls500FreeSCY :
-  (event === "B_50FR_SCY") ? standardsBoys50FreeSCY :
-  (event === "B_50FL_SCY") ? standardsBoys50FlySCY :
+
+  // BOYS (ADD THESE)
+  (event === "B_50FR_SCY")  ? standardsBoys50FreeSCY :
+  (event === "B_100FR_SCY") ? standardsBoys100FreeSCY :
+  (event === "B_200FR_SCY") ? standardsBoys200FreeSCY :
+  (event === "B_500FR_SCY") ? standardsBoys500FreeSCY :
+
+  (event === "B_50BK_SCY")  ? standardsBoys50BackSCY :
+  (event === "B_100BK_SCY") ? standardsBoys100BackSCY :
+  (event === "B_200BK_SCY") ? standardsBoys200BackSCY :
+
+  (event === "B_50BR_SCY")  ? standardsBoys50BreastSCY :
+  (event === "B_100BR_SCY") ? standardsBoys100BreastSCY :
+
+  (event === "B_50FL_SCY")  ? standardsBoys50FlySCY :
+  (event === "B_100FL_SCY") ? standardsBoys100FlySCY :
+
+  (event === "B_200IM_SCY") ? standardsBoys200IMSCY :
+
   null;
 
 const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
