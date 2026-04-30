@@ -976,10 +976,7 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
     document.getElementById("pctUsed").textContent = "";
     document.getElementById("coverageNote").textContent = "";
 
-    console.log("Progression inputs:", event, age, std);
-renderProgression(event, age, std);
-
-    if (improveTable) {
+     if (improveTable) {
       drawChart(age, time, "Overall", improveTable, eventLabel);
     }
     return;
@@ -1017,8 +1014,8 @@ document.getElementById("pctUsed").textContent =
   document.getElementById("predRange").textContent =
     `${formatSecondsToSwimTime(Math.min(pred25, pred75))} – ${formatSecondsToSwimTime(Math.max(pred25, pred75))}`;
 
-  console.log("Progression inputs:", event, age, std);
-  renderProgression(event, age, std);
+  console.log("Progression inputs:", event, ageInt, std.letter);
+renderProgression(event, ageInt, std.letter);
 
   drawChart(age, time, std.tier, improveTable, eventLabel);
 });
