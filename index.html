@@ -279,6 +279,8 @@
           <div class="small" id="pctUsed"></div>
           <div class="small" id="nPairsNote"></div>
 
+          <div id="progressionBox" class="small" style="margin-top:15px;"></div>
+
         </div>
 
         <div class="small" style="margin-top:12px;">
@@ -556,6 +558,7 @@ function getStandardLetter(ageInt, timeSec, standardsByGroup){
 --------------------------*/
 let IMPROVEMENT_MODELS = null; // loaded from improvement_models.json
 let TIME_STANDARDS = null;
+let PROGRESSION = null;
 
 // IMPORTANT:
 // If you already have a real 50 Free improvement object from your prior work,
@@ -890,7 +893,40 @@ function predictNextTimeFromModel(timeNow, modelCell) {
     n: modelCell.n
   };
 }
+function renderProgression(event, age, level) {
+  const box = document.getElementById("progressionBox");
+  if (!box) return;
 
+  box.textContent = "";
+
+  if (!PROGRESSION) return;
+
+  const ageKey = String(Math.floor(age));
+  const eventData = PROGRESSION[event];
+  if (!eventData) return;
+
+  const ageData = eventData[ageKey];
+  if (!ageData) return;
+
+  const levelKey = level || "Below_B";
+  const data = ageData[levelKey];
+
+  if (!data || data.nWithFollowUp < 10) {
+    box.textContent = "Long-term outlook: not enough follow-up data for this age and level yet.";
+    return;
+  }
+
+  const p = data.by16;
+
+  box.innerHTML = `
+    <strong>Long-term outlook by age 16</strong><br>
+    Based on ${data.nWithFollowUp} swimmers with follow-up:<br>
+    • ${(p.A_or_better * 100).toFixed(0)}% reached A or better<br>
+    • ${(p.AA_or_better * 100).toFixed(0)}% reached AA or better<br>
+    • ${(p.AAA_or_better * 100).toFixed(0)}% reached AAA or better<br>
+    • ${(p.AAAA * 100).toFixed(0)}% reached AAAA
+  `;
+}
 /* -------------------------
    Predict Button
 --------------------------*/
@@ -938,6 +974,8 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
     document.getElementById("predRange").textContent = "—";
     document.getElementById("pctUsed").textContent = "";
     document.getElementById("coverageNote").textContent = "";
+
+    renderProgression(event, age, std);
 
     if (improveTable) {
       drawChart(age, time, "Overall", improveTable, eventLabel);
@@ -1046,6 +1084,7 @@ async function initApp(){
   try {
     IMPROVEMENT_MODELS = await loadImprovementModels();
 TIME_STANDARDS = await loadTimeStandards();
+PROGRESSION = await loadProgression();
     // Update dropdown tags now that we know which events have data
     updateEventDropdownStatus();
 
@@ -1070,6 +1109,11 @@ TIME_STANDARDS = await loadTimeStandards();
 async function loadTimeStandards() {
   const res = await fetch("time_standards_scy_2024_2028.json", { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load time_standards.json (${res.status})`);
+  return await res.json();
+}
+async function loadProgression() {
+  const res = await fetch("progression_probabilities_by16.json", { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load progression file");
   return await res.json();
 }
 
