@@ -914,28 +914,38 @@ function renderProgression(event, age, level) {
     return;
   }
   const p = data.by16;
+  let confidence = "Low";
+  if (data.nWithFollowUp >= 50) confidence = "High";
+  else if (data.nWithFollowUp >= 20) confidence = "Moderate";
 
-  function bar(label, value) {
-    const pct = (value * 100).toFixed(0);
-    const width = Math.round(value * 100); // percent width
-    return `
-      <div style="margin:4px 0;">
-        <div style="display:flex; justify-content:space-between;">
-          <span>${label}</span>
-          <span>${pct}%</span>
-        </div>
-        <div style="background:#eee; height:8px; border-radius:4px;">
-          <div style="width:${width}%; background:#4CAF50; height:8px; border-radius:4px;"></div>
-        </div>
+ function bar(label, value) {
+  const pct = (value * 100).toFixed(0);
+  const width = Math.round(value * 100);
+
+  let color = "#4CAF50"; // default
+
+  if (label.includes("A or better")) color = "#2196F3";      // blue
+  if (label.includes("AA or better")) color = "#9C27B0";     // purple
+  if (label.includes("AAA or better")) color = "#FF9800";    // orange
+  if (label === "AAAA") color = "#FFD700";                   // gold
+
+  return `
+    <div style="margin:6px 0;">
+      <div style="display:flex; justify-content:space-between;">
+        <span>${label}</span>
+        <span>${pct}%</span>
       </div>
-    `;
-  }
-
+      <div style="background:#eee; height:8px; border-radius:4px;">
+        <div style="width:${width}%; background:${color}; height:8px; border-radius:4px;"></div>
+      </div>
+    </div>
+  `;
+}
   box.innerHTML = `
     <div style="margin-top:10px;">
-      <strong>Long-term outlook by age 16</strong><br>
+      <strong>Projected progression by age 16</strong><br>
       <span style="font-size:12px; color:#666;">
-        Based on ${data.nWithFollowUp} swimmers with follow-up
+      Based on ${data.nWithFollowUp} swimmers with follow-up • Confidence: ${confidence}
       </span>
       ${bar("A or better", p.A_or_better)}
       ${bar("AA or better", p.AA_or_better)}
