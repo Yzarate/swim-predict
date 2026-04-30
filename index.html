@@ -975,7 +975,8 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
     document.getElementById("pctUsed").textContent = "";
     document.getElementById("coverageNote").textContent = "";
 
-    renderProgression(event, age, std);
+    console.log("Progression inputs:", event, age, std);
+renderProgression(event, age, std);
 
     if (improveTable) {
       drawChart(age, time, "Overall", improveTable, eventLabel);
