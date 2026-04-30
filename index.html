@@ -897,7 +897,7 @@ function renderProgression(event, age, level) {
   const box = document.getElementById("progressionBox");
   if (!box) return;
 
-  box.textContent = "";
+  box.innerHTML = "";
 
   if (!PROGRESSION) return;
 
@@ -908,13 +908,42 @@ function renderProgression(event, age, level) {
   const ageData = eventData[ageKey];
   if (!ageData) return;
 
-  const levelKey = level || "Below_B";
-  const data = ageData[levelKey];
-
+  const data = ageData[level];
   if (!data || data.nWithFollowUp < 10) {
-    box.textContent = "Long-term outlook: not enough follow-up data for this age and level yet.";
+    box.innerHTML = "Long-term outlook: not enough follow-up data.";
     return;
   }
+  const p = data.by16;
+
+  function bar(label, value) {
+    const pct = (value * 100).toFixed(0);
+    const width = Math.round(value * 100); // percent width
+    return `
+      <div style="margin:4px 0;">
+        <div style="display:flex; justify-content:space-between;">
+          <span>${label}</span>
+          <span>${pct}%</span>
+        </div>
+        <div style="background:#eee; height:8px; border-radius:4px;">
+          <div style="width:${width}%; background:#4CAF50; height:8px; border-radius:4px;"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  box.innerHTML = `
+    <div style="margin-top:10px;">
+      <strong>Long-term outlook by age 16</strong><br>
+      <span style="font-size:12px; color:#666;">
+        Based on ${data.nWithFollowUp} swimmers with follow-up
+      </span>
+      ${bar("A or better", p.A_or_better)}
+      ${bar("AA or better", p.AA_or_better)}
+      ${bar("AAA or better", p.AAA_or_better)}
+      ${bar("AAAA", p.AAAA)}
+    </div>
+  `;
+}
 
   const p = data.by16;
 
