@@ -914,9 +914,27 @@ function renderProgression(event, age, level) {
     return;
   }
   const p = data.by16;
-  let confidence = "Low";
-  if (data.nWithFollowUp >= 50) confidence = "High";
-  else if (data.nWithFollowUp >= 20) confidence = "Moderate";
+
+let confidence = "Low";
+if (data.nWithFollowUp >= 50) confidence = "High";
+else if (data.nWithFollowUp >= 20) confidence = "Moderate";
+
+// NEW BLOCK ↓↓↓
+const exact = data.exact || {};
+let topOutcome = null;
+let topValue = -1;
+
+for (const [level, value] of Object.entries(exact)) {
+  if (value > topValue) {
+    topOutcome = level;
+    topValue = value;
+  }
+}
+
+const topOutcomeText =
+  topOutcome && topOutcome !== "Below_B"
+    ? `Most common outcome by age 16: ${topOutcome} (${(topValue * 100).toFixed(0)}%)`
+    : `Most common outcome by age 16: below B (${(topValue * 100).toFixed(0)}%)`;
 
  function bar(label, value) {
   const pct = (value * 100).toFixed(0);
@@ -945,7 +963,11 @@ function renderProgression(event, age, level) {
     <div style="margin-top:10px;">
       <strong>Projected progression by age 16</strong><br>
       <span style="font-size:12px; color:#666;">
-      Based on ${data.nWithFollowUp} swimmers with follow-up • Confidence: ${confidence}
+       Based on ${data.nWithFollowUp} swimmers with follow-up • Confidence: ${confidence}
+      </span>
+      <br>
+      <span style="font-size:12px; color:#444;">
+        ${topOutcomeText}
       </span>
       ${bar("A or better", p.A_or_better)}
       ${bar("AA or better", p.AA_or_better)}
