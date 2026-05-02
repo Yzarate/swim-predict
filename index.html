@@ -69,7 +69,8 @@
     }
     label{
       display:block;
-      font-size: 13px;
+      font-size: 15px;
+      line-height: 1.4;
       color:var(--muted);
       margin:10px 0 6px;
     }
@@ -138,9 +139,9 @@
     }
     .small{
       color: var(--muted);
-      font-size: 14px;
-      margin-top: 6px;
-      line-height: 1.5;
+      font-size: 15px;
+      margin-top: 7px;
+      line-height: 1.55;
     }
     #chart{
      width: 100% !important;
@@ -173,11 +174,11 @@
     }
     .chartTitle .left{
       font-weight:700;
-      font-size: 14px;
+      font-size: 16px;
     }
     .chartTitle .right{
       color: var(--muted);
-      font-size: 12px;
+      font-size: 14px;
     }
 
     @media (max-width: 900px){
@@ -832,35 +833,57 @@ if (!pctRow) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          labels: {
-            color: "#eaf0ff",
-            filter: (item, data) => data.datasets[item.datasetIndex].label !== "low-edge-helper"
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => {
-              const v = ctx.parsed.y;
-              if (v == null) return "";
-              return `${ctx.dataset.label}: ${formatSecondsToSwimTime(v)}`;
-            }
-          }
-        }
+  legend: {
+    labels: {
+      color: "#eaf0ff",
+      font: {
+        size: 14
       },
+      filter: (item, data) => data.datasets[item.datasetIndex].label !== "low-edge-helper"
+    }
+  },
+  tooltip: {
+    bodyFont: {
+      size: 14
+    },
+    titleFont: {
+      size: 14
+    },
+    callbacks: {
+      label: (ctx) => {
+        const v = ctx.parsed.y;
+        if (v == null) return "";
+        return `${ctx.dataset.label}: ${formatSecondsToSwimTime(v)}`;
+      }
+    }
+  }
+},
       scales: {
-        x: {
-          ticks: { color: "#b8c3e6" },
-          grid: { color: "rgba(255,255,255,.06)" },
-          title: { display: true, text: "Age", color: "#b8c3e6" }
-        },
-        y: {
-          ticks: {
-            color: "#b8c3e6",
-            callback: (v) => formatSecondsToSwimTime(v)
-          },
-          grid: { color: "rgba(255,255,255,.06)" },
-          title: { display: true, text: "Time", color: "#b8c3e6" }
+  x: {
+    ticks: {
+      color: "#b8c3e6",
+      font: { size: 13 }
+    },
+    grid: { color: "rgba(255,255,255,.06)" },
+    title: {
+      display: true,
+      text: "Age",
+      color: "#b8c3e6",
+      font: { size: 14 }
+    }
+  },
+  y: {
+    ticks: {
+      color: "#b8c3e6",
+      font: { size: 13 },
+      callback: (v) => formatSecondsToSwimTime(v)
+    },
+    grid: { color: "rgba(255,255,255,.06)" },
+    title: {
+      display: true,
+      text: "Time",
+      color: "#b8c3e6",
+      font: { size: 14 }
         }
       }
     }
