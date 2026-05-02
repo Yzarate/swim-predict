@@ -25,11 +25,12 @@
       background: radial-gradient(1200px 600px at 20% 0%, #10214a 0%, var(--bg) 55%);
       color:var(--text);
     }
-    .wrap{
-      max-width: 1100px;
-      margin: 28px auto;
-      padding: 0 16px 40px;
-    }
+    .wrap {
+     max-width: 1400px;
+    width: 100%;
+     margin: 0 auto;
+     padding: 16px 20px;
+}
     header{
       display:flex;
       align-items:center;
@@ -48,12 +49,11 @@
       font-size: 14px;
       line-height: 1.35;
     }
-    .grid{
-      display:grid;
-      grid-template-columns: 420px 1fr;
-      gap:16px;
-      align-items:start;
-    }
+   .grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 20px;
+}
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
       border:1px solid var(--line);
@@ -131,16 +131,16 @@
       display:none;
     }
     .big{
-      font-size: 26px;
-      font-weight:800;
+      font-size: 30px;
+      font-weight:700;
       margin: 6px 0 0;
       letter-spacing: .2px;
     }
     .small{
       color: var(--muted);
-      font-size: 13px;
+      font-size: 14px;
       margin-top: 6px;
-      line-height: 1.6;
+      line-height: 1.5;
     }
     #chart{
      width: 100% !important;
@@ -149,7 +149,7 @@
     }
 
     .chartWrap{
-  padding: 12px 12px 6px;
+  padding: 16px;
   background: rgba(255,255,255,.02);
   border:1px solid var(--line);
   border-radius: 16px;
@@ -183,6 +183,31 @@
     @media (max-width: 900px){
       .grid{ grid-template-columns: 1fr; }
     }
+    @media (max-width: 768px) {
+  .wrap {
+    padding: 12px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .big {
+    font-size: 28px;
+  }
+
+  .small {
+    font-size: 14px;
+  }
+
+  input, select, button {
+    font-size: 16px;
+  }
+}
   </style>
 </head>
 
