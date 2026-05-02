@@ -858,32 +858,33 @@ if (!pctRow) {
     }
   }
 },
-      scales: {
-  x: {
-    ticks: {
-      color: "#b8c3e6",
-      font: { size: 13 }
-    },
-    grid: { color: "rgba(255,255,255,.06)" },
-    title: {
-      display: true,
-      text: "Age",
-      color: "#b8c3e6",
-      font: { size: 14 }
-    }
-  },
-  y: {
-    ticks: {
-      color: "#b8c3e6",
-      font: { size: 13 },
-      callback: (v) => formatSecondsToSwimTime(v)
-    },
-    grid: { color: "rgba(255,255,255,.06)" },
-    title: {
-      display: true,
-      text: "Time",
-      color: "#b8c3e6",
-      font: { size: 14 }
+        scales: {
+        x: {
+          ticks: {
+            color: "#b8c3e6",
+            font: { size: 13 }
+          },
+          grid: { color: "rgba(255,255,255,.06)" },
+          title: {
+            display: true,
+            text: "Age",
+            color: "#b8c3e6",
+            font: { size: 14 }
+          }
+        },
+        y: {
+          ticks: {
+            color: "#b8c3e6",
+            font: { size: 13 },
+            callback: (v) => formatSecondsToSwimTime(v)
+          },
+          grid: { color: "rgba(255,255,255,.06)" },
+          title: {
+            display: true,
+            text: "Time",
+            color: "#b8c3e6",
+            font: { size: 14 }
+          }
         }
       }
     }
