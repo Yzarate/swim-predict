@@ -1159,7 +1159,8 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
   const nTxt = Number.isFinite(pct.n) ? ` • nPairs=${pct.n}` : "";
 const pctLabel = pct.blended ? `${pct.sourceLabel} (blended)` : pct.sourceLabel;
 document.getElementById("pctUsed").textContent =
-  `Typical improvement: ${fmtPct(pct.p50)} (range ${fmtPct(pct.p25)}–${fmtPct(pct.p75)})`;
+  document.getElementById("pctUsed").textContent =
+  `Typical improvement: ${fmtPct(pct.p50)} (range ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})`;
   
   const nextAge = Math.floor(age) + 1;
   const pred50 = applyPct(time, pct.p50);
