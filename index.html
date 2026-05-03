@@ -1093,7 +1093,6 @@ const topOutcomeText =
    Predict Button
 --------------------------*/
 document.getElementById("predictBtn").addEventListener("click", () => {
-console.log("Predict clicked");
   const age = parseInt(document.getElementById("age").value, 10);
   const time = parseSwimTimeToSeconds(document.getElementById("time").value);
   const event = document.getElementById("event").value;
@@ -1177,8 +1176,7 @@ document.getElementById("pctUsed").textContent =
   document.getElementById("predRange").textContent =
     `${formatSecondsToSwimTime(Math.min(pred25, pred75))} – ${formatSecondsToSwimTime(Math.max(pred25, pred75))}`;
 
-  console.log("Progression inputs:", event, ageInt, std.letter);
-renderProgression(event, ageInt, std.letter);
+  renderProgression(event, ageInt, std.letter);
 
   drawChart(age, time, std.tier, improveTable, eventLabel);
 });
