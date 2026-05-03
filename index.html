@@ -22,7 +22,7 @@
   .sectionTitle{
   font-size: 15px;
   font-weight: 600;
-  margin-top: 14px;
+  margin-top: 18px;
   margin-bottom: 4px;
   letter-spacing: 0.2px;
 }
@@ -827,9 +827,7 @@ if (!pctRow) {
   const overallN = overallRow && Number.isFinite(overallRow.n) ? overallRow.n : null;
 
   const lastAgePlotted = ages[ages.length - 1];
-  const msg = (overallN != null)
-    ? `Projection stops at age ${lastAgePlotted} because overall nPairs for ${a-1}→${a} is ${overallN} (below minimum).`
-    : `Projection stops at age ${lastAgePlotted} due to limited consecutive-year data beyond this age.`;
+  const msg = `Projection shown through age ${lastAgePlotted} due to limited data beyond this age.`;
 
   document.getElementById("coverageNote").textContent = msg;
   break;
@@ -1041,7 +1039,7 @@ for (const [level, value] of Object.entries(exact)) {
 
 const topOutcomeText =
   topOutcome && topOutcome !== "Below_B"
-    ? `Most likely  outcome: ${topOutcome} (${(topValue * 100).toFixed(0)}%)`
+    ? `Most likely outcome: ${topOutcome} (${(topValue * 100).toFixed(0)}%)`
     : `Most likely outcome: below B (${(topValue * 100).toFixed(0)}%)`;
 
  function bar(label, value) {
@@ -1071,9 +1069,9 @@ const topOutcomeText =
   <div style="margin-top:10px;">
     <div class="sectionTitle">By age 16</div>
 
-    <span style="font-size:12px; color:#ddd;">
-      ${topOutcomeText}
-    </span>
+    <div style="font-weight:600; margin-bottom:6px;">
+  ${topOutcomeText}
+</div>
 
     ${bar("A or better", p.A_or_better)}
     ${bar("AA or better", p.AA_or_better)}
@@ -1161,7 +1159,7 @@ const improveTable = IMPROVEMENT_MODELS ? IMPROVEMENT_MODELS[event] : null;
   const nTxt = Number.isFinite(pct.n) ? ` • nPairs=${pct.n}` : "";
 const pctLabel = pct.blended ? `${pct.sourceLabel} (blended)` : pct.sourceLabel;
 document.getElementById("pctUsed").textContent =
-  `Model used (${pctLabel}, age ${ageInt}→${ageInt+1}): median ${fmtPct(pct.p50)} (typical ${fmtPct(pct.p25)} to ${fmtPct(pct.p75)})${nTxt}`;
+  `Typical improvement: ${fmtPct(pct.p50)} (range ${fmtPct(pct.p25)}–${fmtPct(pct.p75)})`;
   
   const nextAge = Math.floor(age) + 1;
   const pred50 = applyPct(time, pct.p50);
