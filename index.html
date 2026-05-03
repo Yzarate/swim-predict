@@ -1221,16 +1221,13 @@ function updateEventDropdownStatus(){
     const code = opt.value;
 
     // Strip any existing suffix tags (so it doesn't accumulate)
-    const baseLabel = opt.textContent
-      .replace(" ✅ ready", "")
-      .replace(" ⚠ coverage only", "")
-      .replace(" — coming soon", "");
-
+    const baseLabel = opt.textContent;
+     
     const hasImprove = !!(IMPROVEMENT_MODELS && IMPROVEMENT_MODELS[code]);
     const hasStandards = HAS_STANDARDS.has(code);
 
     if (hasImprove) {
-  opt.textContent = baseLabel + " ✅ ready";
+  opt.textContent = baseLabel;
 } else {
   opt.textContent = baseLabel + " — coming soon";
 }
